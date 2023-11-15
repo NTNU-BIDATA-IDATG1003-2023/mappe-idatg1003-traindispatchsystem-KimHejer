@@ -55,6 +55,8 @@ public class Printer {
 
   public void printErrorMessage(int choice) {
     switch(choice) {
+      case 0:
+        break;
       case 1:
         System.out.println("Invalid input, the input has to be an integer. Try again.");
         break;
@@ -66,7 +68,13 @@ public class Printer {
         break;
       case 4:
         System.out.println("Invalid input, try again");
-        System.out.println(timeStringFormat);
+        break;
+      case 5:
+        System.out.println("Invalid input, the departure time cannot be before the current time. Try again.");
+        break;
+      case 6:
+        System.out.println("There is already a departure with that train number, try a new one.");
+        break;
 
     }
 

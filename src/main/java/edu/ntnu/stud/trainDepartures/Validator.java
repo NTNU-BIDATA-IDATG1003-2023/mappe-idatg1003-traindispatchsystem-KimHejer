@@ -51,4 +51,5 @@ public class Validator {
     return string != null && !string.isEmpty();
   }
 
+  // public boolean validateDelay()
 }

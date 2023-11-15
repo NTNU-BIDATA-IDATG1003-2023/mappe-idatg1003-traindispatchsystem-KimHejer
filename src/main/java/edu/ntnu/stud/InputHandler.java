@@ -45,7 +45,7 @@ public class InputHandler {
   public String stringInputHandler(String message) {
     printer.printMessage(message);
     String menuChoice = userInput.nextLine();
-    while (!validator.validateString(menuChoice)){
+    while (!validator.validateString(menuChoice)) {
       printer.printErrorMessage(3);
       printer.printMessage(message);
       menuChoice = userInput.nextLine();
@@ -56,9 +56,10 @@ public class InputHandler {
   public String setTimeString(String message) {
     printer.printMessage(message);
     String timeString = stringInputHandler(timeStringFormat);
-    while (!validator.checkTimeString(timeString)){
+    while (!validator.checkTimeString(timeString)) {
       printer.printErrorMessage(4);
       printer.printMessage(message);
+      printer.printMessage(timeStringFormat);
       timeString = userInput.nextLine();
     }
     return timeString;

@@ -1,7 +1,8 @@
 package edu.ntnu.stud.trainDepartures;
 
-// import java.time.LocalTime;
-import java.util.Objects;
+import java.time.LocalTime;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * The {@code TrainDeparture} represents a train departure. All {@code TrainDeparture}s
  * have a train number, destination, line and departure time.
@@ -21,12 +22,14 @@ import java.util.Objects;
 
 public class TrainDeparture {
   private int trainNumber;
-  private String track;
+  private int track;
   private String destination;
-  private int line;
+  private String line;
   private String departureTime;
+  private String initialDepartureTime;
   private String delay = "00:00";
-  private String errormessage = "INVALID";
+  private final String errormessage = "INVALID";
+  private final int maxTrack = 10;
 
   /**
    * Constructs a new {@code TrainDeparture} by taking train number, destination, line and departure
@@ -40,7 +43,7 @@ public class TrainDeparture {
    * @param line          The line number of the train, a positive number above 0.
    * @param departureTime The time of departure. Has to be written in the format "HH:MM".
    */
-  public TrainDeparture(int trainNumber, String destination, int line,
+  public TrainDeparture(int trainNumber, String destination, String line,
                         String departureTime) {
     this.setTrainNumber(trainNumber);
     this.setDestination(destination);
@@ -59,6 +62,10 @@ public class TrainDeparture {
    */
   public void setTrainNumber(int trainNumber) {
     this.trainNumber = Math.max(trainNumber, 0);
+  }
+
+  public void changeTrainNumber(int trainNumber) {
+    this.trainNumber = trainNumber;
   }
 
   /**
@@ -80,8 +87,12 @@ public class TrainDeparture {
    * @param track The track the train will be located at as a valid and non-null {@code String}.
    * @since 1.0.0
    */
-  public void setTrack(String track) {
-    this.track = Objects.requireNonNullElse(track, errormessage);
+  public void setTrack(int track) {
+    if (track > 0 && track <= maxTrack) {
+      this.track = track;
+    } else {
+      this.track = -1;
+    }
   }
 
   /**
@@ -89,7 +100,7 @@ public class TrainDeparture {
    *
    * @return The destination of the {@code TrainDeparture}.
    */
-  public String getTrack() {
+  public int getTrack() {
     return track;
   }
 
@@ -103,7 +114,11 @@ public class TrainDeparture {
    * @since 1.0.0
    */
   public void setDestination(String destination) {
-    this.destination = Objects.requireNonNullElse(destination, errormessage);
+    if (validateString(destination)) {
+      this.destination = destination;
+    } else {
+      this.destination = errormessage;
+    }
   }
 
   /**
@@ -120,7 +135,7 @@ public class TrainDeparture {
    *
    * @return The line of the {@code TrainDeparture}.
    */
-  public int getLine() {
+  public String getLine() {
     return line;
   }
 
@@ -133,8 +148,12 @@ public class TrainDeparture {
    * @param line The line number of the train as a valid and positive number greater than 0.
    * @since 1.0.0
    */
-  public void setLine(int line) {
-    this.line = Math.max(line, 0);
+  public void setLine(String line) {
+    if (validateString(line)){
+      this.line = line;
+    } else {
+      this.line = errormessage;
+    }
   }
 
   /**
@@ -150,9 +169,14 @@ public class TrainDeparture {
    * @see #checkTimeString(String)
    */
   public void setDepartureTime(String departureTime) {
-    if (checkTimeString(departureTime)) {
-      this.departureTime = departureTime;
-    } else {
+    try {
+      if (checkTimeString(departureTime)) {
+        this.departureTime = departureTime;
+        this.initialDepartureTime = departureTime;
+      } else {
+        this.departureTime = errormessage;
+      }
+    } catch (Exception e) {
       this.departureTime = errormessage;
     }
   }
@@ -167,9 +191,18 @@ public class TrainDeparture {
   }
 
   /**
+   * Provides the initial departure time of the {@code TrainDeparture}.
+   *
+   * @return The initial departure time of the {@code TrainDeparture}.
+   */
+  public String getInitialDepartureTime() {
+    return initialDepartureTime;
+  }
+
+  /**
    * Sets a delay to the departure time of a {@code TrainDeparture} when a valid {@code String} is
    * provided. The {@code String} is valid if and only if it is written in the format "HH:MM" and
-   * the time is a valid time before midnight.
+   * the sum of the delay and current departure time is before midnight.
    *
    * <p>The delay is set to "INVALID" when an invalid value is provided. The "INVALID" can be used
    * to verify if the {@code TrainDeparture} object is valid to use.
@@ -178,12 +211,41 @@ public class TrainDeparture {
    * @since 1.0.0
    * @see #checkTimeString(String)
    */
-  public void addDelay(String delay) {
-    if (checkTimeString(delay)) {
-      this.delay = delay;
-    } else {
+  public void setDelay(String delay) {
+    try {
+        if (checkTimeString(delay)) {
+          int delayHour = LocalTime
+              .parse(delay)
+              .getHour();
+          int delayMinute = LocalTime
+              .parse(delay)
+              .getMinute();
+          LocalTime newTime = LocalTime
+              .parse(departureTime)
+              .plusMinutes(delayMinute)
+              .plusHours((delayHour));
+          if (newTime.isBefore(LocalTime.parse(departureTime))){
+            this.delay = errormessage;
+          }
+          else{
+            this.delay = delay;
+            this.departureTime = newTime.getHour() + ":" + newTime.getMinute();
+          }
+        } else {
+          this.delay = errormessage;
+        }
+    } catch (Exception e) {
       this.delay = errormessage;
     }
+  }
+
+  /**
+   * Provides the delay of the {@code TrainDeparture}.
+   *
+   * @return The delay of the {@code TrainDeparture}.
+   */
+  public String getDelay() {
+    return delay;
   }
 
   /**
@@ -197,7 +259,7 @@ public class TrainDeparture {
    * @return {@code true} if the timeString is valid, {@code false} otherwise.
    * @since 1.0.0
    */
-  public boolean checkTimeString(String timeString) {
+  private boolean checkTimeString(@NotNull String timeString) {
     String[] timeStringList = timeString.split("\\:", 0);
     boolean output = true;
     if (timeStringList.length != 2) {
@@ -211,16 +273,35 @@ public class TrainDeparture {
       try {
         int hourInt = Integer.parseInt(hour);
         int minuteInt = Integer.parseInt(minute);
-        if (hourInt > 23 || minuteInt > 59) {
+        if (hourInt > 23 || hourInt < 0 || minuteInt < 0 || minuteInt > 59) {
           output = false;
         }
-      } catch (Exception e) {
+      } catch (NumberFormatException e) {
         output = false;
       }
     }
     return output;
   }
+
+  /**
+   * The {@code validateString} method checks if a given {@code String} is a valid string.
+   * The string is valid if and only if it is not null or empty.
+   *
+   * @param string The string to be checked.
+   * @return {@code true} if the string is valid, {@code false} otherwise.
+   * @since 1.0.0
+   */
+  private boolean validateString(String string) {
+    return string != null && !string.isEmpty();
+  }
   /*
+  private boolean validateString(String string) {
+    boolean output = true;
+    if (string == null || string.isEmpty()) {
+      output = false;
+    }
+    return output;
+  }
 
   private int[] stringToTime(String timeString) {
     String[] timeStringList = timeString.split("\\:");
