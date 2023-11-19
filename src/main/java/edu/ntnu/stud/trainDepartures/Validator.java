@@ -1,5 +1,7 @@
 package edu.ntnu.stud.trainDepartures;
 
+import java.time.LocalTime;
+
 public class Validator {
 
 
@@ -51,5 +53,17 @@ public class Validator {
     return string != null && !string.isEmpty();
   }
 
-  // public boolean validateDelay()
+  public boolean validateDelay(String departureTime, String delay, Object currentTime) {
+    boolean output = false;
+    int delayHour = LocalTime.parse(delay).getHour();
+    int delayMinute = LocalTime.parse(delay).getMinute();
+    if (!LocalTime
+        .parse(departureTime)
+        .plusHours(delayHour)
+        .plusMinutes(delayMinute)
+        .isBefore((LocalTime) currentTime)) {
+      output = true;
+    }
+    return output;
+  }
 }

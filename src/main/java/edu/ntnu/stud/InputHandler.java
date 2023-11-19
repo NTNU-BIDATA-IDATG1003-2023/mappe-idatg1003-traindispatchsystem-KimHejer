@@ -42,6 +42,15 @@ public class InputHandler {
     return output;
   }
 
+  public int choiceHandler(int min, int max) {
+    int output = intInputHandler();
+    if (output < min || output > max) {
+      printer.printMessage("Invalid input, the number has to be between " + min + " and " + max);
+      choiceHandler(min, max);
+    }
+    return output;
+  }
+
   public String stringInputHandler(String message) {
     printer.printMessage(message);
     String menuChoice = userInput.nextLine();
@@ -63,5 +72,13 @@ public class InputHandler {
       timeString = userInput.nextLine();
     }
     return timeString;
+  }
+
+  public String setDelayString(String departureTime, Object currentTime) {
+    String delayString;
+    do {
+      delayString = setTimeString("How much time would you like to delay the departure with?");
+    } while(validator.validateDelay(departureTime, delayString, currentTime));
+    return delayString;
   }
 }

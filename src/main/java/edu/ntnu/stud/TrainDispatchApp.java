@@ -3,7 +3,6 @@ package edu.ntnu.stud;
 import edu.ntnu.stud.trainDepartures.*;
 import java.time.LocalTime;
 import java.util.Iterator;
-import java.util.Scanner;
 
 /**
  * This is the main class for the train dispatch application.
@@ -32,7 +31,7 @@ public class TrainDispatchApp {
     int menuChoice = 0;
     while (menuChoice != 9) {
       printer.printMenuChoices();
-      menuChoice = inputHandler.intInputHandler();
+      menuChoice = inputHandler.choiceHandler(1, 9);
       switch (menuChoice) {
         case 1:
           addNewTrainDeparture();
@@ -41,6 +40,7 @@ public class TrainDispatchApp {
           // changeTrainDeparture();
           break;
         case 3:
+          setDelayToDeparture();
           // add delay to train departure
           // Legg inn forsinkelse på en togavgang – ved å først søke etter en gitt togavgang basert på
           // tognummer, og deretter legge til forsinkelse
@@ -50,18 +50,13 @@ public class TrainDispatchApp {
           //sette spor.
           break;
         case 5:
-          // searchTrainDepartureTrainNumber();
+          searchDepartures();
           // Søke etter en togavgang basert på Tognummer
           break;
         case 6:
           printAllTrainDepartures();
           break;
         case 7:
-          // Søke etter togavgang basert på destinasjon
-          // searchDeparturesByDestination();
-          break;
-        case 8:
-          // Oppdatere klokken (tidspunktet på dagen) – ved å spørre bruker etter nytt klokkeslett.
           setCurrentTime();
           break;
         case 9:
@@ -105,13 +100,80 @@ public class TrainDispatchApp {
     printer.printMessage("The train departure has been added!");
   }
 
+  private void searchDepartures() {
+    printer.printSearchMenuChoices();
+    int menuChoice = 0;
+    do {
+    menuChoice = inputHandler.choiceHandler(1, 2);
+    switch (menuChoice) {
+      case 1:
+        searchDepartureByTrainNumber();
+        break;
+      case 2:
+        searchDeparturesByDestination();
+        break;
+      default:
+        printer.printErrorMessage(7);
+        break;
+    }
+    } while (menuChoice != 1 && menuChoice != 2 && menuChoice != 3);
+  }
+
+  private void setDelayToDeparture() {
+    String departureTime = departureRegister.getDepartureByTrainNumber(getTrainNumber()).getDepartureTime();
+    inputHandler.setDelayString(departureTime, currentTime);
+    // DENNE MÅ FIKSES PÅ
+  }
+
+  private int getTrainNumber() {
+    printer.printMessage("What is the train number?");
+    return inputHandler.intInputHandler();
+  }
+
+  private void searchDepartureByTrainNumber() {
+    int trainNumber = getTrainNumber();
+    TrainDeparture trainDeparture = departureRegister.getDepartureByTrainNumber(trainNumber);
+    if (trainDeparture != null) {
+      printer.printDepartureDetails(trainDeparture);
+    } else {
+      printer.printMessage("There is no departure with that train number.");
+    }
+  }
+
+  private void searchDeparturesByDestination() {
+    String destination = inputHandler.stringInputHandler("What is the destination of the departure(s)?");
+    Iterator<TrainDeparture> test = departureRegister.getDeparturesByDestination(destination);
+    if (test.hasNext()) {
+      while (test.hasNext()) {
+        printer.printDepartureDetails(test.next());
+      }
+    } else {
+      printer.printMessage("There are no departures going to that destination.");
+    }
+  }
+
   private void setCurrentTime() {
     currentTime =  LocalTime.parse(inputHandler.setTimeString("What is the current time?"));
     departureRegister.removeDeparturesBeforeCurrentTime(currentTime);
+    printer.printMessage("The time is now: " + currentTime);
   }
 
   private void printAllTrainDepartures() {
-    Iterator allDepartures = departureRegister.getDepartureArray();
+    Iterator<TrainDeparture> allDepartures = departureRegister.getAllDeparturesSorted();
+    if (allDepartures.hasNext()) {
+      printer.printMessage("Printing all departures:");
+      printer.printGeneralDeparture();
+      while (allDepartures.hasNext()) {
+        TrainDeparture trainDeparture = allDepartures.next();
+        printer.printDepartureDetails(trainDeparture);
+      }
+    } else {
+      printer.printMessage("There are no departures at the moment.");
+    }
+  }
+
+  private void printAllTrainDeparturesSorted() {
+    Iterator allDepartures = departureRegister.getAllDeparturesSorted();
     while (allDepartures.hasNext()) {
       TrainDeparture trainDeparture = (TrainDeparture) allDepartures.next();
       printer.printDepartureDetails(trainDeparture);
