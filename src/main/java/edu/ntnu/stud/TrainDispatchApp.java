@@ -1,8 +1,16 @@
 package edu.ntnu.stud;
 
-import edu.ntnu.stud.trainDepartures.*;
+import static java.lang.String.valueOf;
+
+import edu.ntnu.stud.traindepartures.*;
+import edu.ntnu.stud.traindeparturetools.InputHandler;
+import edu.ntnu.stud.traindeparturetools.Printer;
+import java.io.InvalidObjectException;
 import java.time.LocalTime;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * This is the main class for the train dispatch application.
@@ -10,13 +18,27 @@ import java.util.Iterator;
  */
 public class TrainDispatchApp {
   // TODO: Fill in the main method and any other methods you need.
+  // Sjekke om det allerede er et tog i registeret med samme spor, tid og linje
+  // Burde sjekke dette hver gang man endrer DP eller spor, og når man legger til tog, bør de
+  // ikke kunne ha samma linje og tid eller samme spor og tid
+  // Sjekke om det er samme linje og tid || samme tid og spor
 
+  // Burde ha en default konstruktør i tillegg til den som tar inn parametere, søk opp hvorfor
+  // Bruk dummy-verdier og sjekk gjennom objektet i GUI for å se om noe er feil og endre deretter
+  // Switch case for meldinger jeg bruker ofte, men ikke for spesifikke meldinger
+  // Bruk err istedenfor out på error message
+  // Inputhandler bør sjekke gjennom for feilverdier, ikke appen eller gui
+  // Sende logger exceptions til en annen fil, slik at det blir mulig for utviklere å lese
 
+  // Logger logger = Logget.getLogger(TrainDispatchApp.class.getName());
+
+  // TrainDeparture test = new TrainDeparture();
+  // test.logger.log(Level.INFO, "Melding");
+  // test.logger.log(Level.SEVERE, "Object creation failed")  // Ikke til bruker, men til utvikler
   private InputHandler inputHandler;
-  private LocalTime currentTime;
+  private LocalTime currentTime = LocalTime.parse("00:00");
   private Printer printer;
   private DepartureRegister departureRegister;
-  private String timeStringFormat = "The format has to be HH:MM, for example 12:00";
 
   public static void main(String[] args) {
     TrainDispatchApp trainDispatchApp = new TrainDispatchApp();
@@ -26,11 +48,10 @@ public class TrainDispatchApp {
   private void start() {
     // Starter prosjektet, kaller init() og viser GUI
     init();
-    printer.printWelcomeMessage();
-    setCurrentTime();
     int menuChoice = 0;
     while (menuChoice != 9) {
       printer.printMenuChoices();
+      printer.printWhiteSpace();
       menuChoice = inputHandler.choiceHandler(1, 9);
       switch (menuChoice) {
         case 1:
@@ -46,6 +67,7 @@ public class TrainDispatchApp {
           // tognummer, og deretter legge til forsinkelse
           break;
         case 4:
+          setTrackToDeparture();
           // Tildele spor til en togavgang – ved først å søke opp togavgang basert på tognummer, og så
           //sette spor.
           break;
@@ -74,15 +96,58 @@ public class TrainDispatchApp {
     printer = new Printer();
     inputHandler = new InputHandler();
     departureRegister = new DepartureRegister();
+    printer.printWelcomeMessage();
+    setCurrentTime();
+    setupInitialDepartures();
 
   }
 
   private void end(){
     // Avslutter prosjektet
   }
+
+  private void setupInitialDepartures() {
+    Random rand = new Random();
+    ArrayList<String> destinationArrayList = new ArrayList<>(
+        List.of("Oslo",
+            "Bergen",
+            "Trondheim",
+            "Lillehammer",
+            "Holmestrand"));
+    List<String> lineList = List.of("L4",
+        "R4",
+        "RE12",
+        "F5",
+        "L5");
+    for (int i = 0; i < 5; i++) {
+      int trainNumber = rand.nextInt(1000);
+      String destination = destinationArrayList.get(i);
+      String line = lineList.get(i);
+      LocalTime departureTime;
+      String departureTimeString;
+      do {
+        int intHour = rand.nextInt(23);
+        int intMinute = rand.nextInt(59);
+        String hour = valueOf(intHour);
+        String minute = valueOf(intMinute);
+        if(intHour<10) {
+          hour = "0" + hour;
+        }
+        if(intMinute<10) {
+          minute = "0" + minute;
+        }
+        departureTimeString = hour + ":" + minute;
+        departureTime = LocalTime.parse(departureTimeString);
+      } while (departureTime.isBefore(currentTime));
+      TrainDeparture trainDeparture = new TrainDeparture(trainNumber, destination, line, departureTimeString);
+      trainDeparture.setTrack(i+1);
+      departureRegister.addNewTrainDeparture(trainDeparture);
+
+    }
+  }
   private void addNewTrainDeparture(){
     printer.printMessage("What is the train number?");
-    int trainNumber = inputHandler.intInputHandler();
+    int trainNumber = inputHandler.intInputHandlerPositive();
     String departureTime = inputHandler.setTimeString("When is the train departing?");
     while (currentTime.isAfter(LocalTime.parse(departureTime))
         && !LocalTime.parse(departureTime).equals(currentTime)) {
@@ -92,17 +157,21 @@ public class TrainDispatchApp {
     String destination = inputHandler.stringInputHandler("What is the destination of the train?");
     String line = inputHandler.stringInputHandler("What is the line of the train?");
     TrainDeparture trainDeparture = new TrainDeparture(trainNumber, destination, line, departureTime);
-    while (!departureRegister.addNewTrainDeparture(trainDeparture)) {
+    while (departureRegister.addNewTrainDeparture(trainDeparture) == 0) {
       printer.printErrorMessage(6);
-      trainNumber = inputHandler.intInputHandler();
+      trainNumber = inputHandler.intInputHandlerPositive();
       trainDeparture.changeTrainNumber(trainNumber);
+    }
+    while (departureRegister.addNewTrainDeparture(trainDeparture) == 2) {
+      printer.printErrorMessage("There is already a train with the same line and departure time");
+      // LEGGE TID CHOICE OM Å BYTTE LINE ELLER TID
     }
     printer.printMessage("The train departure has been added!");
   }
 
   private void searchDepartures() {
     printer.printSearchMenuChoices();
-    int menuChoice = 0;
+    int menuChoice;
     do {
     menuChoice = inputHandler.choiceHandler(1, 2);
     switch (menuChoice) {
@@ -116,36 +185,40 @@ public class TrainDispatchApp {
         printer.printErrorMessage(7);
         break;
     }
-    } while (menuChoice != 1 && menuChoice != 2 && menuChoice != 3);
+    } while (menuChoice != 1 && menuChoice != 2);
   }
 
   private void setDelayToDeparture() {
-    String departureTime = departureRegister.getDepartureByTrainNumber(getTrainNumber()).getDepartureTime();
-    inputHandler.setDelayString(departureTime, currentTime);
-    // DENNE MÅ FIKSES PÅ
+    TrainDeparture departure = departureRegister.getDepartureByTrainNumber(getTrainNumber());
+    String delayString = inputHandler.setDelayString(departure.getDepartureTime(), currentTime);
+    departure.setDelay(delayString);
+    // DENNE MÅ FIKSES PÅ, GIR UT MINUTTER UTEN 0 FORAN
   }
 
   private int getTrainNumber() {
     printer.printMessage("What is the train number?");
-    return inputHandler.intInputHandler();
+    return inputHandler.intInputHandlerPositive();
   }
 
   private void searchDepartureByTrainNumber() {
-    int trainNumber = getTrainNumber();
-    TrainDeparture trainDeparture = departureRegister.getDepartureByTrainNumber(trainNumber);
+    TrainDeparture trainDeparture = getDepartureByTrainNumber();
     if (trainDeparture != null) {
       printer.printDepartureDetails(trainDeparture);
     } else {
       printer.printMessage("There is no departure with that train number.");
     }
   }
+  private TrainDeparture getDepartureByTrainNumber() {
+    int trainNumber = getTrainNumber();
+    return departureRegister.getDepartureByTrainNumber(trainNumber);
+  }
 
   private void searchDeparturesByDestination() {
     String destination = inputHandler.stringInputHandler("What is the destination of the departure(s)?");
-    Iterator<TrainDeparture> test = departureRegister.getDeparturesByDestination(destination);
-    if (test.hasNext()) {
-      while (test.hasNext()) {
-        printer.printDepartureDetails(test.next());
+    Iterator<TrainDeparture> destinationIterator = departureRegister.getDeparturesByDestination(destination);
+    if (destinationIterator.hasNext()) {
+      while (destinationIterator.hasNext()) {
+        printer.printDepartureDetails(destinationIterator.next());
       }
     } else {
       printer.printMessage("There are no departures going to that destination.");
@@ -153,7 +226,12 @@ public class TrainDispatchApp {
   }
 
   private void setCurrentTime() {
-    currentTime =  LocalTime.parse(inputHandler.setTimeString("What is the current time?"));
+    LocalTime newTime =  LocalTime.parse(inputHandler.setTimeString("What is the current time?"));
+    while (newTime.isBefore(currentTime)) {
+      printer.printMessage("You cannot set a time earlier than the current time.");
+      newTime =  LocalTime.parse(inputHandler.setTimeString("What is the current time?"));
+    }
+    currentTime = newTime;
     departureRegister.removeDeparturesBeforeCurrentTime(currentTime);
     printer.printMessage("The time is now: " + currentTime);
   }
@@ -170,19 +248,30 @@ public class TrainDispatchApp {
     } else {
       printer.printMessage("There are no departures at the moment.");
     }
+    printer.printWhiteSpace();
   }
 
-  private void printAllTrainDeparturesSorted() {
-    Iterator allDepartures = departureRegister.getAllDeparturesSorted();
-    while (allDepartures.hasNext()) {
-      TrainDeparture trainDeparture = (TrainDeparture) allDepartures.next();
-      printer.printDepartureDetails(trainDeparture);
+  private void setTrackToDeparture() {
+    TrainDeparture traindeparture = getDepartureByTrainNumber();
+    int track;
+    if (traindeparture == null) {
+      printer.printMessage("There is no departure with that train number. There are 10 tracks");
+    } else {
+      printer.printMessage("What track will you set the departure to?");
+      track = inputHandler.intInputHandlerPositive();
+      while(track > 10 || track <= 0) {
+        printer.printErrorMessage("The track can only be between 1 and 10");
+        printer.printMessage("What track will you set the departure to?");
+        track = inputHandler.intInputHandlerPositive();
+      }
+      traindeparture.setTrack(track);
     }
   }
 
+
 }
 
-// Compare to
-// Avanserte samlinger som sorterer for deg
+
+
 
 

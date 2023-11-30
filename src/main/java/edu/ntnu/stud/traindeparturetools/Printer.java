@@ -1,48 +1,50 @@
-package edu.ntnu.stud;
+package edu.ntnu.stud.traindeparturetools;
 
-import edu.ntnu.stud.trainDepartures.TrainDeparture;
+import edu.ntnu.stud.traindepartures.TrainDeparture;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class Printer {
 
   private String timeStringFormat = "The format has to be HH:MM, for example 12:00";
 
   public void printDepartureDetails(TrainDeparture trainDeparture){
-    StringBuilder departureDetails = new StringBuilder();
+    System.out.print(" ");
     if (!trainDeparture.getDelay().equals("00:00")) {
-      departureDetails.append(trainDeparture.getInitialDepartureTime()
-          + "  "
-          + trainDeparture.getDepartureTime());
+      System.out.format("%-5s", strikeThrough(trainDeparture.getInitialDepartureTime()));
+      System.out.format("%3s", "");
+      System.out.format("%-10s", trainDeparture.getDepartureTime());
     } else {
-      departureDetails.append(trainDeparture.getDepartureTime());
+      System.out.format("%-18s", trainDeparture.getDepartureTime());
     }
-    departureDetails.append("  " + trainDeparture.getLine())
-            .append("  " + trainDeparture.getTrainNumber())
-            .append("  " + trainDeparture.getDestination());
+    System.out.format("%-10s", trainDeparture.getTrainNumber());
+    System.out.format("%-8s", trainDeparture.getLine());
+    System.out.format("%-15s", trainDeparture.getDestination());
     if (trainDeparture.getTrack() != 0) {
-      departureDetails.append("  " + trainDeparture.getTrack());
+      System.out.format("%-2s", trainDeparture.getTrack());
     } else {
-      departureDetails.append("  N/A");
+      System.out.format("%-2s", "N/A");
     }
-    System.out.println(departureDetails);
+    System.out.println();
+  }
+
+  private String strikeThrough(String str) {
+    return str.chars()
+        .mapToObj(c -> "" + (char) c + "\u0336")
+        .collect(Collectors.joining());
   }
 
   public void printMenuChoices(){
-    System.out.println("What would you like to do? Enter a number between 1 and 7.");
+    System.out.println("What would you like to do? Enter a number between 1 and 9.");
     System.out.println("1. Add a new train departure");
     System.out.println("2. Change a train departure");
     System.out.println("3. Add delay to a train departure");
     System.out.println("4. Delete a train departure");
     System.out.println("5. Search for a train departure");
     System.out.println("6. Print all train departures");
-    System.out.println("7. ");
-    System.out.println("8. ");
+    System.out.println("7. Change time");
+    System.out.println("8. None");
     System.out.println("9. Exit");
-    // Legge til et tog
-    // Endre på en togavgang
-    // Slette en togavgang
-    // Søke etter en togavgang
-    // Skrive ut alle togavganger
-    // Avslutte programmet
   }
 
   public void printSearchMenuChoices() {
@@ -89,12 +91,19 @@ public class Printer {
 
   }
   public void printGeneralDeparture() {
-    System.out.println("|Initial Departure|  |Current Departure|  |Line|  |Train Number|  |Destination|  |Track|");
-    System.out.println("----------------------------------------------------------------------------------------");
+    System.out.println("|Departure Time|  |Number|  |Line|  |Destination|  |Track|");
+    System.out.println("----------------------------------------------------------");
   }
 
   public void printMessage(String message) {
     System.out.println(message);
   }
 
+  public void printErrorMessage(String message) {
+    System.err.println(message);
+  }
+
+  public void printWhiteSpace() {
+    System.out.println();
+  }
 }

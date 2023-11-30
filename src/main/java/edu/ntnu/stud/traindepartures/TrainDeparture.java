@@ -1,6 +1,9 @@
-package edu.ntnu.stud.trainDepartures;
+package edu.ntnu.stud.traindepartures;
 
+import java.io.InvalidObjectException;
 import java.time.LocalTime;
+import java.util.InputMismatchException;
+import javax.management.StringValueExp;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +29,7 @@ public class TrainDeparture {
   private String destination;
   private String line;
   private String departureTime;
-  private String initialDepartureTime;
+  private final String initialDepartureTime;
   private String delay = "00:00";
   private final String errormessage = "INVALID";
   private final int maxTrack = 10;
@@ -45,10 +48,11 @@ public class TrainDeparture {
    */
   public TrainDeparture(int trainNumber, String destination, String line,
                         String departureTime) {
-    this.setTrainNumber(trainNumber);
-    this.setDestination(destination);
-    this.setLine(line);
-    this.setDepartureTime(departureTime);
+      this.setTrainNumber(trainNumber);
+      this.setDestination(destination);
+      this.setLine(line);
+      this.setDepartureTime(departureTime);
+      this.initialDepartureTime = departureTime;
   }
 
   /**
@@ -172,7 +176,6 @@ public class TrainDeparture {
     try {
       if (checkTimeString(departureTime)) {
         this.departureTime = departureTime;
-        this.initialDepartureTime = departureTime;
       } else {
         this.departureTime = errormessage;
       }
@@ -180,6 +183,7 @@ public class TrainDeparture {
       this.departureTime = errormessage;
     }
   }
+
 
   /**
    * Provides the departure time of the {@code TrainDeparture}.
@@ -211,17 +215,14 @@ public class TrainDeparture {
    * @since 1.0.0
    * @see #checkTimeString(String)
    */
-  public void setDelay(String delay) {
+  public void setDelay2(String delay) {
     try {
         if (checkTimeString(delay)) {
-          int delayHour = LocalTime
-              .parse(delay)
+          int delayHour = LocalTime.parse(delay)
               .getHour();
-          int delayMinute = LocalTime
-              .parse(delay)
+          int delayMinute = LocalTime.parse(delay)
               .getMinute();
-          LocalTime newTime = LocalTime
-              .parse(departureTime)
+          LocalTime newTime = LocalTime.parse(departureTime)
               .plusMinutes(delayMinute)
               .plusHours((delayHour));
           if (newTime.isBefore(LocalTime.parse(departureTime))){
@@ -237,6 +238,14 @@ public class TrainDeparture {
     } catch (Exception e) {
       this.delay = errormessage;
     }
+  }
+
+  public void setDelay(String delay) {
+    this.delay = delay;
+    LocalTime newTime = LocalTime.parse(this.departureTime)
+        .plusHours(LocalTime.parse(delay).getHour())
+        .plusMinutes(LocalTime.parse(delay).getMinute());
+    setDepartureTime(localTimeToString(newTime));
   }
 
   /**
@@ -294,25 +303,20 @@ public class TrainDeparture {
   private boolean validateString(String string) {
     return string != null && !string.isEmpty();
   }
-  /*
-  private boolean validateString(String string) {
-    boolean output = true;
-    if (string == null || string.isEmpty()) {
-      output = false;
+
+  private String localTimeToString(LocalTime time) {
+    int hour = time.getHour();
+    int minute = time.getMinute();
+    return convertTimeValueToString(hour) + ":" + convertTimeValueToString(minute);
+  }
+
+  private String convertTimeValueToString(int value) {
+    String valueString;
+    if (value < 10) {
+      valueString = "0" + value;
+    } else {
+      valueString = String.valueOf(value);
     }
-    return output;
+    return valueString;
   }
-
-  private int[] stringToTime(String timeString) {
-    String[] timeStringList = timeString.split("\\:");
-    int hour = Integer.parseInt(timeStringList[0]);
-    int minute = Integer.parseInt(timeStringList[1]);
-    return new int[]{hour, minute};
-  }
-
-  private String timeToString(int hour, int minute) {
-    return hour + "" + minute;
-  }
-
-  */
 }

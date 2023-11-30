@@ -2,7 +2,7 @@ package edu.ntnu.stud.trainDeparture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.stud.trainDepartures.TrainDeparture;
+import edu.ntnu.stud.traindepartures.TrainDeparture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

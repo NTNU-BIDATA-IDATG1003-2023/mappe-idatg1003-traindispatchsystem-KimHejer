@@ -1,4 +1,4 @@
-package edu.ntnu.stud.trainDepartures;
+package edu.ntnu.stud.traindeparturetools;
 
 import java.time.LocalTime;
 

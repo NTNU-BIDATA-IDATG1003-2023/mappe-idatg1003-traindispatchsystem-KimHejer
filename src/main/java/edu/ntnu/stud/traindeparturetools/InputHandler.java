@@ -1,6 +1,6 @@
-package edu.ntnu.stud;
+package edu.ntnu.stud.traindeparturetools;
 
-import edu.ntnu.stud.trainDepartures.Validator;
+import edu.ntnu.stud.traindepartures.TrainDeparture;
 import java.util.Scanner;
 
 public class InputHandler {
@@ -16,19 +16,8 @@ public class InputHandler {
     printer = new Printer();
   }
 
-  private int intInputHandler2() {
-    int menuChoice = 0;
-    try {
-      menuChoice = userInput.nextInt();
-    } catch (Exception e) {
-      System.out.println("Invalid input, the input has to be an integer.");
-      intInputHandler2();
-    }
-    userInput.nextLine();
-    return menuChoice;
-  }
 
-  public int intInputHandler() {
+  public int intInputHandlerPositive() {
     String menuChoice = userInput.nextLine();
     int output = 0;
     try {
@@ -37,13 +26,17 @@ public class InputHandler {
       // System.out.println(e.getCause());
       // System.out.println(e.getMessage());
       printer.printErrorMessage(1);
-      intInputHandler();
+      intInputHandlerPositive();
+    }
+    if(output < 0) {
+      printer.printMessage("The number has to be positive. Try again.");
+      intInputHandlerPositive();
     }
     return output;
   }
 
   public int choiceHandler(int min, int max) {
-    int output = intInputHandler();
+    int output = intInputHandlerPositive();
     if (output < min || output > max) {
       printer.printMessage("Invalid input, the number has to be between " + min + " and " + max);
       choiceHandler(min, max);
@@ -78,7 +71,9 @@ public class InputHandler {
     String delayString;
     do {
       delayString = setTimeString("How much time would you like to delay the departure with?");
-    } while(validator.validateDelay(departureTime, delayString, currentTime));
+    } while(!validator.validateDelay(departureTime, delayString, currentTime));
     return delayString;
   }
 }
+// Note to self: Fiks inputs så de ser bra ut typ om man skriver "osLo" burde det endres til "OSLO"
+// Stopp bruker fra å skrive integer i destination

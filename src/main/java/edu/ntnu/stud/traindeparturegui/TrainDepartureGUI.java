@@ -1,6 +1,6 @@
-package edu.ntnu.stud.trainDepartureGUIs;
+package edu.ntnu.stud.traindeparturegui;
 
-import edu.ntnu.stud.trainDepartures.TrainDeparture;
+import edu.ntnu.stud.traindepartures.TrainDeparture;
 import java.time.LocalTime;
 
 public class TrainDepartureGUI {
