@@ -2,6 +2,20 @@ package edu.ntnu.stud.traindeparturetools;
 
 import java.time.LocalTime;
 
+/**
+ * The {@code Validator} class contains methods for validating user input.
+ *
+ * <p>The {@code Validator} class contains methods for validating user input. The methods check if
+ * the input is valid and return {@code true} if it is valid and {@code false} otherwise.
+ *
+ * <p>The {@code Validator} class is used by the {@code InputHandler} class.
+ *
+ * @author Kim Hejer
+ * @version 1.0.0
+ * @since 1.0.0
+ * @see InputHandler
+ */
+
 public class Validator {
 
 
@@ -10,7 +24,7 @@ public class Validator {
    * The timeString is valid if and only if it is written in the format "HH:MM" and the time
    * is a valid time before midnight.
    *
-   * <p>Example: "12:00" is a valid timeString, but "12:60" is not.
+   * <p>Example: "12:00" is a valid timeString, but "12:60" and "2150" are not.
    *
    * @param timeString The timeString to be checked.
    * @return {@code true} if the timeString is valid, {@code false} otherwise.
@@ -53,7 +67,20 @@ public class Validator {
     return string != null && !string.isEmpty();
   }
 
-  public boolean validateDelay(String departureTime, String delay, Object currentTime) {
+  /**
+   * The {@code validateTime} method checks if a given {@code String} is a valid time.
+   * The time is valid if and only if it is written in the format "HH:MM" and the time
+   * is a valid time before midnight.
+   *
+   * <p>Example: "12:00" is a valid time, but "12:60" is not.
+   *
+   * @param departureTime The departure time of the {@code TrainDeparture} object to be checked.
+   * @param delay         The delay of the {@code TrainDeparture} object to be checked.
+   * @param currentTime   The current time.
+   * @return {@code true} if the delay is valid, {@code false} otherwise.
+   * @since 1.0.0
+   */
+  public boolean validateDelay(String departureTime, String delay, LocalTime currentTime) {
     boolean output = false;
     int delayHour = LocalTime.parse(delay).getHour();
     int delayMinute = LocalTime.parse(delay).getMinute();
@@ -61,7 +88,7 @@ public class Validator {
         .parse(departureTime)
         .plusHours(delayHour)
         .plusMinutes(delayMinute)
-        .isBefore((LocalTime) currentTime)) {
+        .isBefore(currentTime)) {
       output = true;
     }
     return output;
