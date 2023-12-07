@@ -33,7 +33,7 @@ class TrainDepartureTest {
 
   @Test
   void setDepartureTimePositiveTestForCorrectDP() {
-    trainDepartureTest = new TrainDeparture(123, "Gjøvik", "L5", "12:00");
+    trainDepartureTest = new TrainDeparture(123, "GJØVIK", "L5", "12:00");
     assertEquals("12:00", trainDepartureTest.getDepartureTime(), "The function is working as intended");
   }
 

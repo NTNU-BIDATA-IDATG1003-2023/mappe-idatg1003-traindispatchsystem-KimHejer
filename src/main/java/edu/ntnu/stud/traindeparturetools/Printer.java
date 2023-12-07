@@ -1,8 +1,22 @@
 package edu.ntnu.stud.traindeparturetools;
 
+import edu.ntnu.stud.traindeparturegui.TrainDepartureGUI;
 import edu.ntnu.stud.traindepartures.TrainDeparture;
+import java.time.LocalTime;
 import java.util.stream.Collectors;
 
+/**
+ * The {@code Printer} class prints messages to the user for the {@code TrainDepartureGUI} class.
+ *
+ * <p>The {@code Printer} class contains methods for printing messages to the user. The methods
+ * print messages to the console.
+ *
+ * @author Kim Hejer
+ * @version 1.0.0
+ * @see TrainDepartureGUI
+ * @see InputHandler
+ * @since 1.0.0
+ */
 public class Printer {
 
   private StringBuilder stringBuilder;
@@ -11,6 +25,19 @@ public class Printer {
     stringBuilder = new StringBuilder();
   }
 
+  /**
+   * The {@code printDepartureDetails} method prints the details of a {@code TrainDeparture} object.
+   * The method prints the departure time, line, train number, destination and track of the
+   * {@code TrainDeparture} object.
+   *
+   * <p>If the {@code TrainDeparture} object has a delay, the initial departure time is printed
+   * with a strike-through font and the current departure time is printed next to it.
+   *
+   * <p>If the {@code TrainDeparture} object does not have a track, the track is printed as "N/A".
+   * The track is otherwise printed as an integer.
+   *
+   * @param trainDeparture The {@code TrainDeparture} object to be printed.
+   */
   public void printDepartureDetails(TrainDeparture trainDeparture) {
     System.out.print(" ");
     if (!trainDeparture.getDelay().equals("00:00")) {
@@ -20,8 +47,8 @@ public class Printer {
     } else {
       System.out.format("%-18s", trainDeparture.getDepartureTime());
     }
-    System.out.format("%-10s", trainDeparture.getTrainNumber());
     System.out.format("%-8s", trainDeparture.getLine());
+    System.out.format("%-10s", trainDeparture.getTrainNumber());
     System.out.format("%-15s", trainDeparture.getDestination());
     if (trainDeparture.getTrack() != 0) {
       System.out.format("%-2s", trainDeparture.getTrack());
@@ -37,6 +64,9 @@ public class Printer {
         .collect(Collectors.joining());
   }
 
+  /**
+   * The {@code printMenuChoices} method prints the main menu-choices for the user.
+   */
   public void printMenuChoices() {
     System.out.println("What would you like to do? Enter a number between 1 and 9.");
     System.out.println("1. Add a new train departure");
@@ -46,16 +76,21 @@ public class Printer {
     System.out.println("5. Search for a train departure");
     System.out.println("6. Print all train departures");
     System.out.println("7. Change time");
-    System.out.println("8. None");
-    System.out.println("9. Exit");
+    System.out.println("8. Exit");
   }
 
+  /**
+   * The {@code printSearchMenuChoices} method prints the search menu-choices for the user.
+   */
   public void printSearchMenuChoices() {
     System.out.println("What would you like to do? Enter a number between 1 and 2.");
     System.out.println("1. Search for departure by train number.");
     System.out.println("2. Search for departures with the same destination.");
   }
 
+  /**
+   * The {@code printChangeMenuChoices} method prints the change menu-choices for the user.
+   */
   public void printChangeMenuChoices() {
     resetStringBuilder();
     stringBuilder.append("What would yo like to edit? Enter a number between 1 and 4." + "\n")
@@ -72,15 +107,26 @@ public class Printer {
     }
   }
 
+  /**
+   * The {@code printChangeTimeMenuChoices} method prints the welcome message to the user.
+   */
   public void printWelcomeMessage() {
     System.out.println("Welcome to the train dispatch application!");
   }
 
+  /**
+   * The {@code printTimeStringFormat} method prints the format of a timeString.
+   */
   public void printTimeStringFormat() {
     String timeStringFormat = "The format has to be HH:MM, for example 12:00";
     System.out.println(timeStringFormat);
   }
 
+  /**
+   * The {@code printMessage} method prints a message to the user.
+   *
+   * @param choice The choice of message to be printed.
+   */
   public void printMessage(int choice) {
     switch (choice) {
       case 1 -> System.out.println("What is the train number?");
@@ -89,10 +135,50 @@ public class Printer {
     }
   }
 
-  public void printChoiceError(int min, int max) {
-    System.err.println("Invalid input, the number has to be between " + min + " and " + max);
+  /**
+   * The {@code printMessage} method prints a given message to the user.
+   */
+  public void printMessage(String message) {
+    System.out.println(message);
   }
 
+  /**
+   * The {@code printErrorMessage} method prints a given error message to the user.
+   */
+  public void printErrorMessage(String message) {
+    System.err.println(message);
+  }
+
+  /**
+   * The {@code printErrorMessage} contains various error messages that can be printed to the user.
+   * The method prints the error message corresponding to the given choice.
+   *
+   * <p>The error messages are:
+   *
+   * <p>1. Invalid input, the input has to be an integer. Try again.
+   *
+   * <p>2. Invalid input, the input has to be an integer between 1 and 9. Try again.
+   *
+   * <p>3. The value cannot be empty or null. Try again.
+   *
+   * <p>4. Invalid input, try again.
+   *
+   * <p>5. Invalid input, the departure time cannot be before the current time. Try again.
+   *
+   * <p>6. There is already a departure with that train number, try a new one.
+   *
+   * <p>7. Invalid input, the input has to be an integer between 1 and 2. Try again.
+   *
+   * <p>8. There is no departure with that train number.
+   *
+   * <p>9. There is already a train with the same line and departure time.
+   *
+   * <p>10. Try again.
+   *
+   * <p>11. There is already a train with the same track and departure time.
+   *
+   * @param choice The choice of error message to be printed.
+   */
   public void printErrorMessage(int choice) {
     switch (choice) {
       case 1 -> System.err.println("Invalid input, the input has to be an integer. Try again.");
@@ -117,30 +203,50 @@ public class Printer {
 
   }
 
-  public void printGeneralDeparture() {
-    System.out.println("|Departure Time|  |Number|  |Line|  |Destination|  |Track|");
+  /**
+   * The {@code printChoiceError} method prints an error message to the user, informing the user
+   * that the input has to be an integer between the given minimum and maximum value.
+   *
+   * @param min The minimum value of the choice.
+   * @param max The maximum value of the choice.
+   */
+  public void printChoiceError(int min, int max) {
+    System.err.println("Invalid input, the number has to be between " + min + " and " + max);
+  }
+
+
+  /**
+   * The {@code printGeneralDeparture} method prints the header for the general departure table.
+   *
+   * @param currentTime The current time of the program.
+   */
+  public void printGeneralDeparture(LocalTime currentTime) {
+    System.out.println("|Departure Time|  |Line|  |Number|  |Destination|  |Track|  "
+        + currentTime);
     printLine();
   }
 
+  /**
+   * The {@code printLine} method prints a line to the console.
+   */
   public void printLine() {
-    System.out.println("----------------------------------------------------------");
+    System.out.println("-----------------------------------------------------------------");
   }
 
-  public void printMessage(String message) {
-    System.out.println(message);
-  }
-
-  public void printErrorMessage(String message) {
-    System.err.println(message);
-  }
-
+  /**
+   * The {@code printWhiteSpace} method prints a white space to the console.
+   */
   public void printWhiteSpace() {
     System.out.println();
   }
 
+  /**
+   * The {@code printEndMessage} method prints the end message to the user.
+   */
   public void printEndMessage() {
     printLine();
     System.out.println("Thank you for using the train dispatch application!");
     System.out.println("The application will now shut down.");
   }
 }
+

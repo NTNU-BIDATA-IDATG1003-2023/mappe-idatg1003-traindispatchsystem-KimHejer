@@ -409,7 +409,7 @@ public class TrainDeparture {
    * @see #convertTimeValueToString(int)
    * @since 1.0.0
    */
-  private String localTimeToString(LocalTime time) {
+  public String localTimeToString(LocalTime time) {
     int hour = time.getHour();
     int minute = time.getMinute();
     return convertTimeValueToString(hour) + ":" + convertTimeValueToString(minute);

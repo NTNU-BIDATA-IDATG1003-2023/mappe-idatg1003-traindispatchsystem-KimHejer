@@ -10,9 +10,6 @@ class DepartureRegisterTest {
 
   @BeforeEach
   void setUp() {
-    TrainDeparture trainDeparture1 = new TrainDeparture(100, "oslo", "l5", "12:00");
-    TrainDeparture trainDeparture2 = new TrainDeparture(101, "gjøvik", "f5", "12:10");
-    TrainDeparture trainDeparture3 = new TrainDeparture(100, "oslo", "l5", "12:00");
   }
 
   @AfterEach

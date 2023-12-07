@@ -78,9 +78,9 @@ public class InputHandler {
    */
   public int choiceHandler(int min, int max) {
     int output = intInputHandlerPositive();
-    if (output < min || output > max) {
+    while (output < min || output > max) {
       printer.printChoiceError(min, max);
-      choiceHandler(min, max);
+      output = intInputHandlerPositive();
     }
     return output;
   }
@@ -131,6 +131,27 @@ public class InputHandler {
       timeString = userInput.nextLine();
     }
     return timeString;
+  }
+
+  /**
+   * The {@code departureTimeStringMaker} method handles user input of departure time String.
+   * The method prompts the user to enter a departure time String. If the input is not a valid
+   * departure time String, the user is prompted to enter a new input. The method returns the input
+   * if it is a valid departure time String. The {@code String} is valid if and only if it is
+   * written in the format "HH:MM" and the time is a valid time before midnight and after the
+   * current time.
+   *
+   * @param currentTime The current time of the program.
+   * @return The departureTimeString entered by the user.
+   */
+  public String departureTimeStringMaker(LocalTime currentTime) {
+    String departureTime = setTimeString("When is the train departing?");
+    while (currentTime.isAfter(LocalTime.parse(departureTime))
+        && !LocalTime.parse(departureTime).equals(currentTime)) {
+      printer.printErrorMessage(5);
+      departureTime = setTimeString("When is the train departing?");
+    }
+    return departureTime;
   }
 
   /**
