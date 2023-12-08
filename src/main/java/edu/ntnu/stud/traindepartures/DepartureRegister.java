@@ -75,7 +75,7 @@ public class DepartureRegister {
    */
   public Iterator<TrainDeparture> getDeparturesByDestination(String destination) {
     return departureHashMap.values().stream()
-        .filter(departure -> departure.getDestination().equals(destination))
+        .filter(departure -> departure.getDestination().equalsIgnoreCase(destination))
         .sorted(Comparator.comparing(TrainDeparture::getDepartureTime)).iterator();
   }
 
@@ -147,7 +147,7 @@ public class DepartureRegister {
   public boolean checkLineAndTime(String line, String departureTime) {
     boolean output = false;
     for (TrainDeparture trainDeparture : departureHashMap.values()) {
-      if (trainDeparture.getLine().equals(line)
+      if (trainDeparture.getLine().equalsIgnoreCase(line)
           && trainDeparture.getDepartureTime().equals(departureTime)) {
         output = true;
       }
