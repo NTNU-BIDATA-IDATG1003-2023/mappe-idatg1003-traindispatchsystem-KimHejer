@@ -11,7 +11,7 @@ import java.util.Scanner;
  * prompted to enter a new input.
  *
  * @author Kim Hejer
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  * @see Validator
  * @see Printer

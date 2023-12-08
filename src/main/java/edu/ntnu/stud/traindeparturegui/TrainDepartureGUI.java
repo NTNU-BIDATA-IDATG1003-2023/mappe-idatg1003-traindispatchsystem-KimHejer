@@ -18,7 +18,7 @@ import java.util.Random;
  * {@code Printer} class to print messages to the user.
  *
  * @author Kim Hejer
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  * @see InputHandler
  * @see Printer

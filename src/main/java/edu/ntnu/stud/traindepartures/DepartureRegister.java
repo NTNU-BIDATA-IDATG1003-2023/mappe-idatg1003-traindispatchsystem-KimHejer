@@ -14,14 +14,13 @@ import java.util.Iterator;
  * {@code TrainDeparture} objects by their train number or destination.
  *
  * @author Kim Hejer
- * @version 1.0.0
+ * @version 1.0.1
  * @see TrainDeparture
  * @since 1.0.0
  */
 public class DepartureRegister {
 
-  HashMap<Integer, TrainDeparture> departureHashMap;
-  Iterator<TrainDeparture> departureIterator;
+  private HashMap<Integer, TrainDeparture> departureHashMap;
 
   /**
    * The {@code DepartureRegister} constructor creates a new {@code HashMap} object.
@@ -60,8 +59,10 @@ public class DepartureRegister {
    * @since 1.0.0
    */
   public void updateHashMap(TrainDeparture trainDeparture, int initialTrainNumber) {
-    departureHashMap.remove(initialTrainNumber);
-    addNewTrainDeparture(trainDeparture);
+    if (departureHashMap.containsKey(initialTrainNumber)) {
+      departureHashMap.remove(initialTrainNumber);
+      addNewTrainDeparture(trainDeparture);
+    }
   }
 
   /**
@@ -102,15 +103,9 @@ public class DepartureRegister {
    * @since 1.0.0
    */
   public void removeDeparturesBeforeCurrentTime(LocalTime currentTime) {
-    departureIterator = departureHashMap.values()
-        .stream()
-        .filter(departure -> LocalTime.parse(departure.getDepartureTime())
-            .isBefore(currentTime)).iterator();
-
-    while (departureIterator.hasNext()) {
-      TrainDeparture temp = departureIterator.next();
-      departureHashMap.remove(temp.getTrainNumber());
-    }
+    departureHashMap.values()
+        .removeIf(departure -> LocalTime.parse(departure.getDepartureTime())
+            .isBefore(currentTime));
   }
 
   /**
@@ -174,6 +169,5 @@ public class DepartureRegister {
     }
     return output;
   }
-
 
 }

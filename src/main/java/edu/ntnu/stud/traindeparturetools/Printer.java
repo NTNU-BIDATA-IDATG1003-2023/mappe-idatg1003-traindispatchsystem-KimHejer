@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * print messages to the console.
  *
  * @author Kim Hejer
- * @version 1.0.0
+ * @version 1.0.1
  * @see TrainDepartureGUI
  * @see InputHandler
  * @since 1.0.0

@@ -9,10 +9,13 @@ import org.junit.jupiter.api.Test;
 
 class TrainDepartureTest {
 
-  private TrainDeparture trainDepartureTest;
+  private TrainDeparture trainDeparturePositive;
+  private TrainDeparture trainDepartureNegative;
 
   @BeforeEach
   void setUp() {
+    trainDeparturePositive = new TrainDeparture(123, "Gjøvik", "L5", "12:00");
+    trainDepartureNegative = new TrainDeparture(123, "Gjøvik", "L5", "12:00");
   }
 
   @AfterEach
@@ -21,48 +24,45 @@ class TrainDepartureTest {
 
   @Test
   void setTrainNumberPositiveTestForCorrectTrainNumber() {
-    trainDepartureTest = new TrainDeparture(123, "Gjøvik", "L5", "12:00");
-    assertEquals(123, trainDepartureTest.getTrainNumber(), "The function is working as intended");
+    assertEquals(123, trainDeparturePositive.getTrainNumber(), "The function is working as intended");
   }
 
   @Test
   void setDestinationPositiveTestForCorrectDestination() {
-    trainDepartureTest = new TrainDeparture(123, "Gjøvik", "L5", "12:00");
-    assertEquals("Gjøvik", trainDepartureTest.getDestination(), "The function is working as intended");
+    assertEquals("Gjøvik".toUpperCase(), trainDeparturePositive.getDestination(), "The function is working as intended");
   }
 
   @Test
   void setDepartureTimePositiveTestForCorrectDP() {
-    trainDepartureTest = new TrainDeparture(123, "GJØVIK", "L5", "12:00");
-    assertEquals("12:00", trainDepartureTest.getDepartureTime(), "The function is working as intended");
+    assertEquals("12:00", trainDeparturePositive.getDepartureTime(), "The function is working as intended");
   }
 
   @Test
   void setTrainNumberNegativeTestForIncorrectTrainNumber() {
-    trainDepartureTest = new TrainDeparture(-5, "Gjøvik", "L5", "12:00");
-    assertNotEquals(-5, trainDepartureTest.getTrainNumber(), "The function is working as intended");
+    trainDepartureNegative.setTrainNumber(-5);
+    assertNotEquals(-5, trainDepartureNegative.getTrainNumber(), "The function is working as intended");
   }
 
   @Test
   void setDestinationNegativeTestForIncorrectDestination() {
-    trainDepartureTest = new TrainDeparture(123, null, "L5", "12:00");
-    assertNotEquals("Oslo", trainDepartureTest.getDestination(), "The function is working as intended");
+    trainDepartureNegative.setDestination("Gjøvik");
+    assertNotEquals("Oslo", trainDeparturePositive.getDestination(), "The function is working as intended");
   }
   @Test
   void setDepartureTimeNegativeTestForIncorrectDP() {
-    trainDepartureTest = new TrainDeparture(123, "Gjøvik", "L5", "10:L5");
-    assertNotEquals("10:L5", trainDepartureTest.getDepartureTime(), "The function is working as intended");
+    trainDepartureNegative.setDepartureTime("10:L5");
+    assertNotEquals("10:L5", trainDeparturePositive.getDepartureTime(), "The function is working as intended");
   }
 
   @Test
   void setDepartureTimeNegativeTestForIncorrectDP2() {
-    trainDepartureTest = new TrainDeparture(123, "Gjøvik", "L5", "50:00");
-    assertNotEquals("50:00", trainDepartureTest.getDepartureTime(), "The function is working as intended");
+    trainDeparturePositive = new TrainDeparture(123, "Gjøvik", "L5", "50:00");
+    assertNotEquals("50:00", trainDeparturePositive.getDepartureTime(), "The function is working as intended");
   }
 
   @Test
   void setDepartureTimeNegativeTestForIncorrectDP3() {
-    trainDepartureTest = new TrainDeparture(123, "Gjøvik", "L5", "010:23");
-    assertNotEquals("010:23", trainDepartureTest.getDepartureTime(), "The function is working as intended");
+    trainDeparturePositive = new TrainDeparture(123, "Gjøvik", "L5", "010:23");
+    assertNotEquals("010:23", trainDeparturePositive.getDepartureTime(), "The function is working as intended");
   }
 }
