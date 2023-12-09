@@ -20,7 +20,7 @@ import java.util.Iterator;
  */
 public class DepartureRegister {
 
-  private HashMap<Integer, TrainDeparture> departureHashMap;
+  private final HashMap<Integer, TrainDeparture> departureHashMap;
 
   /**
    * The {@code DepartureRegister} constructor creates a new {@code HashMap} object.

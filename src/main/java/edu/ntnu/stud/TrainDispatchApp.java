@@ -19,11 +19,6 @@ public class TrainDispatchApp {
   // Sende logger exceptions til en annen fil, slik at det blir mulig for utviklere å lese
   // Hvis train number er under 1000, legg til null(er) foran i print
 
-  // Logger logger = Logget.getLogger(TrainDispatchApp.class.getName());
-  // TrainDeparture test = new TrainDeparture();
-  // test.logger.log(Level.INFO, "Melding");
-  // test.logger.log(Level.SEVERE, "Object creation failed")  // Ikke til bruker, men til utvikler
-
   public static void main(String[] args) {
     TrainDepartureGUI trainDepartureGUI = new TrainDepartureGUI();
     trainDepartureGUI.init();
@@ -31,7 +26,7 @@ public class TrainDispatchApp {
 
   }
   public TrainDispatchApp() {
-
+    // Overriding default constructor
   }
 }
 

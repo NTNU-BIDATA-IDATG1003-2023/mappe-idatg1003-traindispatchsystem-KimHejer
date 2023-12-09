@@ -1,5 +1,6 @@
 package edu.ntnu.stud.traindeparturetools;
 
+import edu.ntnu.stud.ErrorLogger;
 import java.time.LocalTime;
 import java.util.Scanner;
 
@@ -19,9 +20,10 @@ import java.util.Scanner;
 
 public class InputHandler {
 
-  private Scanner userInput;
-  private Validator validator;
-  private Printer printer;
+  private final Scanner userInput;
+  private final Validator validator;
+  private final Printer printer;
+  private final ErrorLogger logger;
 
   /**
    * The {@code InputHandler} constructor creates a new {@code Scanner} object, a new
@@ -33,6 +35,7 @@ public class InputHandler {
     userInput = new Scanner(System.in);
     validator = new Validator();
     printer = new Printer();
+    logger = ErrorLogger.getLogger();
   }
 
 
@@ -58,9 +61,11 @@ public class InputHandler {
               "The number has to be positive and of higher value than zero. Try again.");
         }
 
-      } catch (Exception e) {
-        // System.out.println(e.getCause());
-        // System.out.println(e.getMessage());
+      } catch (NumberFormatException e) {
+        logger.logError(e.getMessage());
+        for (StackTraceElement element : e.getStackTrace()) {
+          logger.logError(String.valueOf(element));
+        }
         printer.printErrorMessage(1);
       }
     } while (output <= 0);

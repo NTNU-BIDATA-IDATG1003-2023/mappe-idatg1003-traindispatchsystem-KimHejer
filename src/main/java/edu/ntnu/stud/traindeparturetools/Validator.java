@@ -1,5 +1,6 @@
 package edu.ntnu.stud.traindeparturetools;
 
+import edu.ntnu.stud.ErrorLogger;
 import java.time.LocalTime;
 
 /**
@@ -17,6 +18,13 @@ import java.time.LocalTime;
  */
 
 public class Validator {
+
+  private final ErrorLogger logger;
+
+
+  public Validator() {
+    logger = ErrorLogger.getLogger();
+  }
 
 
   /**
@@ -41,7 +49,6 @@ public class Validator {
       if (hour.length() != 2 || minute.length() != 2) {
         output = false;
       }
-      // Failsafe termination / graceful termination
       try {
         int hourInt = Integer.parseInt(hour);
         int minuteInt = Integer.parseInt(minute);
@@ -49,6 +56,10 @@ public class Validator {
           output = false;
         }
       } catch (NumberFormatException e) {
+        logger.logError(e.getMessage());
+        for (StackTraceElement element : e.getStackTrace()) {
+          logger.logError(String.valueOf(element));
+        }
         output = false;
       }
     }

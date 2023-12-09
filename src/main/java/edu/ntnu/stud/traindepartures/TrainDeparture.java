@@ -2,9 +2,7 @@ package edu.ntnu.stud.traindepartures;
 
 
 import java.time.LocalTime;
-// import java.io.InvalidObjectException;
-// import java.util.InputMismatchException;
-// import javax.management.StringValueExp;
+import edu.ntnu.stud.ErrorLogger;
 
 /**
  * The {@code TrainDeparture} represents a train departure. All {@code TrainDeparture}s have a train
@@ -40,6 +38,7 @@ public class TrainDeparture {
   private String delay = DEFAULT_TIME;
   private static final String ERROR_VALUE = "INVALID";
   private static final int MAX_TRACK = 10;
+  private ErrorLogger logger;
 
 
   /**
@@ -49,6 +48,8 @@ public class TrainDeparture {
    */
   public TrainDeparture() {
     this.initialDepartureTime = DEFAULT_TIME;
+    this.logger = ErrorLogger.getLogger();
+
   }
 
   /**
@@ -70,6 +71,7 @@ public class TrainDeparture {
     this.setLine(line);
     this.setDepartureTime(departureTime);
     this.initialDepartureTime = departureTime;
+    this.logger = ErrorLogger.getLogger();
   }
 
   /**
@@ -376,6 +378,10 @@ public class TrainDeparture {
           output = false;
         }
       } catch (NumberFormatException e) {
+        logger.logError(e.getMessage());
+        for (StackTraceElement element : e.getStackTrace()) {
+          logger.logError(String.valueOf(element));
+        }
         output = false;
       }
     }
@@ -386,7 +392,11 @@ public class TrainDeparture {
     LocalTime output;
     try {
       output = LocalTime.parse(timeString);
-    } catch (Exception e) {
+    } catch (NumberFormatException e) {
+      logger.logError(e.getMessage());
+      for (StackTraceElement element : e.getStackTrace()) {
+        logger.logError(String.valueOf(element));
+      }
       output = DEFAULT_TIME2;
     }
     return output;

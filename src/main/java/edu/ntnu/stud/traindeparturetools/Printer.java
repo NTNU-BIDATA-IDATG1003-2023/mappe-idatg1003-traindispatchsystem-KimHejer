@@ -2,6 +2,7 @@ package edu.ntnu.stud.traindeparturetools;
 
 import edu.ntnu.stud.traindeparturegui.TrainDepartureGUI;
 import edu.ntnu.stud.traindepartures.TrainDeparture;
+import java.rmi.ServerError;
 import java.time.LocalTime;
 import java.util.stream.Collectors;
 
@@ -198,6 +199,7 @@ public class Printer {
       case 10 -> System.err.println("Try again.");
       case 11 ->
           System.err.println("There is already a train with the same track and departure time.");
+      case 12 -> System.err.println("Something went wrong.");
       default -> System.err.println("Choice out of bounds");
     }
 
