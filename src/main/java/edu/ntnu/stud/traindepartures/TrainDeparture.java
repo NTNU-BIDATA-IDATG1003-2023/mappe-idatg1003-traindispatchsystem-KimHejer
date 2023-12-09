@@ -21,7 +21,7 @@ import java.time.LocalTime;
  * {@code TrainDeparture}.
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @since 1.0.0
  */
 
@@ -32,7 +32,10 @@ public class TrainDeparture {
   private String destination;
   private String line;
   private String departureTime;
+  private LocalTime departureTime2;
   private String initialDepartureTime;
+  private static final LocalTime DEFAULT_TIME2 = LocalTime.parse("00:00");
+  private LocalTime delay2 = DEFAULT_TIME2;
   private static final String DEFAULT_TIME = "00:00";
   private String delay = DEFAULT_TIME;
   private static final String ERROR_VALUE = "INVALID";
@@ -222,7 +225,7 @@ public class TrainDeparture {
    * @see #checkTimeString(String)
    * @since 1.0.0
    */
-  public void setDepartureTime(String departureTime) {
+  public void setDepartureTime2(String departureTime) {
     try {
       if (checkTimeString(departureTime)) {
         this.departureTime = departureTime;
@@ -232,6 +235,10 @@ public class TrainDeparture {
     } catch (Exception e) {
       this.departureTime = ERROR_VALUE;
     }
+  }
+
+  public void setDepartureTime(String departureTime) {
+    this.departureTime2 = setTime(departureTime);
   }
 
   /**
@@ -246,7 +253,7 @@ public class TrainDeparture {
    * @see #checkTimeString(String)
    * @since 1.0.0
    */
-  public void changeDepartureTime(String departureTime) {
+  public void changeDepartureTime2(String departureTime) {
     try {
       if (checkTimeString(departureTime)) {
         this.departureTime = departureTime;
@@ -260,13 +267,19 @@ public class TrainDeparture {
     this.initialDepartureTime = departureTime;
   }
 
+  public void changeDepartureTime(String departureTime) {
+    this.departureTime2 = setTime(departureTime);
+    this.delay2 = DEFAULT_TIME2;
+  }
+
   /**
-   * Provides the departure time of the {@code TrainDeparture}.
+   * Provides the departure time of the {@code TrainDeparture} as {@code LocalTime}.
    *
    * @return The departure time of the {@code TrainDeparture}.
    */
-  public String getDepartureTime() {
-    return departureTime;
+  public LocalTime getDepartureTime() {
+    return departureTime2.plusHours(delay2.getHour())
+        .plusMinutes(delay2.getMinute());
   }
 
   /**
@@ -274,45 +287,10 @@ public class TrainDeparture {
    *
    * @return The initial departure time of the {@code TrainDeparture}.
    */
-  public String getInitialDepartureTime() {
-    return initialDepartureTime;
+  public LocalTime getInitialDepartureTime() {
+    return departureTime2;
   }
 
-  /**
-   * Sets a delay to the departure time of a {@code TrainDeparture} when a valid {@code String} is
-   * provided. The {@code String} is valid if and only if it is written in the format "HH:MM" and
-   * the sum of the delay and current departure time is before midnight.
-   *
-   * <p>The delay is set to "INVALID" when an invalid value is provided. The "INVALID" can be used
-   * to verify if the {@code TrainDeparture} object is valid to use.
-   *
-   * @param delay The delay to the departure time. Has to be written in the format "HH:MM".
-   * @see #checkTimeString(String)
-   * @since 1.0.0
-   */
-  public void setDelay2(String delay) {
-    try {
-      if (checkTimeString(delay)) {
-        int delayHour = LocalTime.parse(delay)
-            .getHour();
-        int delayMinute = LocalTime.parse(delay)
-            .getMinute();
-        LocalTime newTime = LocalTime.parse(departureTime)
-            .plusMinutes(delayMinute)
-            .plusHours((delayHour));
-        if (newTime.isBefore(LocalTime.parse(departureTime))) {
-          this.delay = ERROR_VALUE;
-        } else {
-          this.delay = delay;
-          this.departureTime = newTime.getHour() + ":" + newTime.getMinute();
-        }
-      } else {
-        this.delay = ERROR_VALUE;
-      }
-    } catch (Exception e) {
-      this.delay = ERROR_VALUE;
-    }
-  }
 
   /**
    * Sets a delay to the departure time of a {@code TrainDeparture} when a valid {@code String} is
@@ -328,7 +306,7 @@ public class TrainDeparture {
    * @see #checkTimeString(String)
    * @since 1.0.0
    */
-  public void setDelay(String delay) {
+  public void setDelay2(String delay) {
     if (checkTimeString(delay)) {
       LocalTime newTime = LocalTime.parse(this.departureTime)
           .plusHours(LocalTime.parse(delay).getHour())
@@ -345,13 +323,28 @@ public class TrainDeparture {
 
   }
 
+  public void setDelay(String delay) {
+    LocalTime newDelay = setTime(delay);
+    if (departureTime2.plusHours(newDelay.getHour())
+        .plusMinutes(newDelay.getMinute())
+        .isBefore(DEFAULT_TIME2)) {
+      this.delay2 = DEFAULT_TIME2;
+    } else {
+      this.delay2 = newDelay;
+    }
+  }
+
   /**
    * Provides the delay of the {@code TrainDeparture}.
    *
    * @return The delay of the {@code TrainDeparture}.
    */
-  public String getDelay() {
+  public String getDelay2() {
     return delay;
+  }
+
+  public LocalTime getDelay() {
+    return delay2;
   }
 
   /**
@@ -385,6 +378,16 @@ public class TrainDeparture {
       } catch (NumberFormatException e) {
         output = false;
       }
+    }
+    return output;
+  }
+
+  private LocalTime setTime(String timeString) {
+    LocalTime output;
+    try {
+      output = LocalTime.parse(timeString);
+    } catch (Exception e) {
+      output = DEFAULT_TIME2;
     }
     return output;
   }

@@ -7,7 +7,7 @@ import edu.ntnu.stud.traindeparturegui.TrainDepartureGUI;
  *
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class TrainDispatchApp {
@@ -17,10 +17,7 @@ public class TrainDispatchApp {
   // Bruk dummy-verdier og sjekk gjennom objektet i GUI for å se om noe er feil og endre deretter
   // Inputhandler bør sjekke gjennom for feilverdier, ikke appen eller gui
   // Sende logger exceptions til en annen fil, slik at det blir mulig for utviklere å lese
-  // Trenger enhetstest-klasse til registerklassen SE DEL 2 AV MAPPEVURDERING
   // Hvis train number er under 1000, legg til null(er) foran i print
-  // Muligens flytte all kode herifra til GUI og heller opprette en instans av den og kalle på start og init
-  // Programmet krasjer om current time endres mer enn 1 gang
 
   // Logger logger = Logget.getLogger(TrainDispatchApp.class.getName());
   // TrainDeparture test = new TrainDeparture();

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * print messages to the console.
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @see TrainDepartureGUI
  * @see InputHandler
  * @since 1.0.0
@@ -40,8 +40,8 @@ public class Printer {
    */
   public void printDepartureDetails(TrainDeparture trainDeparture) {
     System.out.print(" ");
-    if (!trainDeparture.getDelay().equals("00:00")) {
-      System.out.format("%-5s", strikeThrough(trainDeparture.getInitialDepartureTime()));
+    if (!trainDeparture.getDelay().equals(LocalTime.MIN)) {
+      System.out.format("%-5s", strikeThrough("" + trainDeparture.getInitialDepartureTime()));
       System.out.format("%3s", "");
       System.out.format("%-10s", trainDeparture.getDepartureTime());
     } else {
@@ -183,7 +183,7 @@ public class Printer {
     switch (choice) {
       case 1 -> System.err.println("Invalid input, the input has to be an integer. Try again.");
       case 2 -> System.err.println(
-          "Invalid input, the input has to be an integer between 1 and 9. Try again.");
+          "Invalid input, the input has to be an integer between 1 and 8. Try again.");
       case 3 -> System.err.println("The value cannot be empty or null. Try again.");
       case 4 -> System.err.println("Invalid input, try again");
       case 5 -> System.err.println(

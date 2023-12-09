@@ -14,7 +14,7 @@ import java.util.Iterator;
  * {@code TrainDeparture} objects by their train number or destination.
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @see TrainDeparture
  * @since 1.0.0
  */
@@ -104,7 +104,7 @@ public class DepartureRegister {
    */
   public void removeDeparturesBeforeCurrentTime(LocalTime currentTime) {
     departureHashMap.values()
-        .removeIf(departure -> LocalTime.parse(departure.getDepartureTime())
+        .removeIf(departure -> departure.getDepartureTime()
             .isBefore(currentTime));
   }
 
@@ -118,7 +118,7 @@ public class DepartureRegister {
     and departure time in the {@code HashMap}, {@code false} otherwise.
    * @since 1.0.0
    */
-  public boolean checkTrackAndTime(int track, String departureTime) {
+  public boolean checkTrackAndTime(int track, LocalTime departureTime) {
     boolean output = false;
     for (TrainDeparture trainDeparture : departureHashMap.values()) {
       if (trainDeparture.getTrack() == track
@@ -139,7 +139,7 @@ public class DepartureRegister {
     departure time in the {@code HashMap}, {@code false} otherwise.
    * @since 1.0.0
    */
-  public boolean checkLineAndTime(String line, String departureTime) {
+  public boolean checkLineAndTime(String line, LocalTime departureTime) {
     boolean output = false;
     for (TrainDeparture trainDeparture : departureHashMap.values()) {
       if (trainDeparture.getLine().equalsIgnoreCase(line)

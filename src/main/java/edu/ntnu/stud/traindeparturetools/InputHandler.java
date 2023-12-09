@@ -11,7 +11,7 @@ import java.util.Scanner;
  * prompted to enter a new input.
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @since 1.0.0
  * @see Validator
  * @see Printer
@@ -167,13 +167,14 @@ public class InputHandler {
    * @since 1.0.0
    * @see Validator
    */
-  public String setDelayString(String departureTime, LocalTime currentTime) {
+  public String setDelayString(LocalTime departureTime, LocalTime currentTime) {
     String delayString = setTimeString("How much time would you like to delay the departure with?");
-    while (!validator.validateDelay(departureTime, delayString, currentTime)) {
+    while (!validator.validateDelay(departureTime, LocalTime.parse(delayString), currentTime)) {
       printer.printErrorMessage(
           "The delay cannot make the departure time exceed midnight. Try again.");
       delayString = setTimeString("How much time would you like to delay the departure with?");
     }
     return delayString;
   }
+
 }

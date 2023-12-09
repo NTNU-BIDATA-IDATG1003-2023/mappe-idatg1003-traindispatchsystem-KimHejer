@@ -18,7 +18,7 @@ import java.util.Random;
  * {@code Printer} class to print messages to the user.
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @since 1.0.0
  * @see InputHandler
  * @see Printer
@@ -194,16 +194,19 @@ public class TrainDepartureGUI {
     do {
       departureTime = inputHandler.departureTimeStringMaker(currentTime);
       if (departureRegister.checkLineAndTime(trainDeparture.getLine(),
-          departureTime)) {
+          LocalTime.parse(departureTime))) {
         printer.printErrorMessage(9);
         printer.printErrorMessage(10);
       }
-      if (departureRegister.checkTrackAndTime(trainDeparture.getTrack(), departureTime)) {
+      if (departureRegister.checkTrackAndTime(trainDeparture.getTrack(),
+          LocalTime.parse(departureTime))) {
         printer.printErrorMessage(11);
         printer.printErrorMessage(10);
       }
-    } while (departureRegister.checkLineAndTime(trainDeparture.getLine(), departureTime)
-        || departureRegister.checkTrackAndTime(trainDeparture.getTrack(), departureTime));
+    } while (departureRegister.checkLineAndTime(trainDeparture.getLine(),
+        LocalTime.parse(departureTime))
+        || departureRegister.checkTrackAndTime(trainDeparture.getTrack(),
+        LocalTime.parse(departureTime)));
     trainDeparture.changeDepartureTime(departureTime);
     printer.printMessage("The train is now departing at: " + trainDeparture.getDepartureTime());
   }
@@ -227,7 +230,7 @@ public class TrainDepartureGUI {
     if (trainDeparture.getLine().equals(errorValue)) {
       changeLine(trainDeparture);
     }
-    if (trainDeparture.getDepartureTime().equals(errorValue)) {
+    if (trainDeparture.getDepartureTime().equals(LocalTime.MIN)) {
       changeDepartureTime(trainDeparture);
     }
     if (trainDeparture.getTrack() == -1) {
@@ -253,13 +256,12 @@ public class TrainDepartureGUI {
       String delayString = inputHandler.setDelayString(trainDeparture.getDepartureTime(),
           currentTime);
       LocalTime newTime = LocalTime.parse(delayString)
-          .plusHours(LocalTime.parse(trainDeparture.getDepartureTime()).getHour())
-          .plusMinutes(LocalTime.parse(trainDeparture.getDepartureTime()).getMinute());
-      String newTimeString = trainDeparture.localTimeToString(newTime);
+          .plusHours(trainDeparture.getDepartureTime().getHour())
+          .plusMinutes(trainDeparture.getDepartureTime().getMinute());
       if (departureRegister.checkLineAndTime(trainDeparture.getLine(),
-          newTimeString)) {
+          newTime)) {
         printer.printErrorMessage(9);
-      } else if (departureRegister.checkTrackAndTime(trainDeparture.getTrack(), newTimeString)) {
+      } else if (departureRegister.checkTrackAndTime(trainDeparture.getTrack(), newTime)) {
         printer.printErrorMessage(11);
       } else {
         trainDeparture.setDelay(delayString);

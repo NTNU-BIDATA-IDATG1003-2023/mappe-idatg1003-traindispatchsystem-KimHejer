@@ -11,7 +11,7 @@ import java.time.LocalTime;
  * <p>The {@code Validator} class is used by the {@code InputHandler} class.
  *
  * @author Kim Hejer
- * @version 1.0.1
+ * @version 1.1.0
  * @since 1.0.0
  * @see InputHandler
  */
@@ -80,7 +80,7 @@ public class Validator {
    * @return {@code true} if the delay is valid, {@code false} otherwise.
    * @since 1.0.0
    */
-  public boolean validateDelay(String departureTime, String delay, LocalTime currentTime) {
+  public boolean validateDelay2(String departureTime, String delay, LocalTime currentTime) {
     boolean output = false;
     int delayHour = LocalTime.parse(delay).getHour();
     int delayMinute = LocalTime.parse(delay).getMinute();
@@ -89,6 +89,14 @@ public class Validator {
         .plusHours(delayHour)
         .plusMinutes(delayMinute)
         .isBefore(currentTime)) {
+      output = true;
+    }
+    return output;
+  }
+
+  public boolean validateDelay(LocalTime departureTime, LocalTime delay, LocalTime currentTime) {
+    boolean output = false;
+    if (departureTime.plusHours(delay.getHour()).plusMinutes(delay.getMinute()).isAfter(currentTime)) {
       output = true;
     }
     return output;
