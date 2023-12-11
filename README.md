@@ -22,8 +22,7 @@ https://github.com/NTNU-BIDATA-IDATG1003-2023/mappe-idatg1003-traindispatchsyste
 
 ## Requirements
 
-* SDK - coretto-17 "java 17.0.9"
-* 
+* Java (JDK 8+)
 
 ## How to run the project
 
