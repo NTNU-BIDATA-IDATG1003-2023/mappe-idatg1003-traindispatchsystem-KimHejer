@@ -7,24 +7,28 @@ import edu.ntnu.stud.traindeparturegui.TrainDepartureGUI;
  *
  *
  * @author Kim Hejer
- * @version 1.1.0
+ * @version 1.1.1
  * @since 1.0.0
  */
 public class TrainDispatchApp {
-  // TODO: Fill in the main method and any other methods you need.
-  // Vise current time når nye tider skal gis
-  // Burde ha en default konstruktør i tillegg til den som tar inn parametere, søk opp hvorfor
-  // Bruk dummy-verdier og sjekk gjennom objektet i GUI for å se om noe er feil og endre deretter
-  // Inputhandler bør sjekke gjennom for feilverdier, ikke appen eller gui
-  // Sende logger exceptions til en annen fil, slik at det blir mulig for utviklere å lese
-  // Hvis train number er under 1000, legg til null(er) foran i print
 
+
+  /**
+   * The main method for the train dispatch application.
+   *
+   * <p>The main method creates a new {@code TrainDepartureGUI} object and calls the {@code init()}
+   * and {@code start()} methods.
+   *
+   * @param args The command line arguments.
+   * @since 1.0.0
+   */
   public static void main(String[] args) {
     TrainDepartureGUI trainDepartureGUI = new TrainDepartureGUI();
     trainDepartureGUI.init();
     trainDepartureGUI.start();
 
   }
+
   public TrainDispatchApp() {
     // Overriding default constructor
   }

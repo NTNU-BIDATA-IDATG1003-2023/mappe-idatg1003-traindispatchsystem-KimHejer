@@ -19,12 +19,12 @@ import java.util.Random;
  * {@code Printer} class to print messages to the user.
  *
  * @author Kim Hejer
- * @version 1.1.0
+ * @version 1.1.1
+ * @since 1.0.0
  * @see InputHandler
  * @see Printer
  * @see DepartureRegister
  * @see TrainDeparture
- * @since 1.0.0
  */
 public class TrainDepartureGUI {
 
@@ -35,6 +35,10 @@ public class TrainDepartureGUI {
   private int menuChoice;
   private Random rand;
 
+
+  public TrainDepartureGUI() {
+    // Overriding default constructor
+  }
 
   /**
    * The {@code start} method starts the main menu in the GUI.

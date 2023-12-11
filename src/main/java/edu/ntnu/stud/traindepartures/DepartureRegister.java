@@ -14,9 +14,9 @@ import java.util.Iterator;
  * {@code TrainDeparture} objects by their train number or destination.
  *
  * @author Kim Hejer
- * @version 1.1.0
- * @see TrainDeparture
+ * @version 1.1.1
  * @since 1.0.0
+ * @see TrainDeparture
  */
 public class DepartureRegister {
 
@@ -107,6 +107,7 @@ public class DepartureRegister {
         .removeIf(departure -> departure.getDepartureTime()
             .isBefore(currentTime));
   }
+
 
   /**
    * The {@code checkTrackAndTime} method checks if there already is a {@code TrainDeparture} object

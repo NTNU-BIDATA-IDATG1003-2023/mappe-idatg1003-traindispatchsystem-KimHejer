@@ -15,18 +15,15 @@ import java.util.logging.SimpleFormatter;
  * class can exist at a time. The class has a private constructor and a static method for getting
  * the instance of the class.
  *
- * <p>The {@code ErrorLogger} class uses the {@code Singleton} design pattern.
- *
+ * @author Kim Hejer
+ * @version 1.1.1
+ * @since 1.1.0
  * @see Logger
  * @see SimpleFormatter
  * @see FileHandler
  * @see RuntimeException
- * @see ErrorLogger
- * @see <a href="https://refactoring.guru/design-patterns/singleton">Singleton design pattern</a>
- * @since 1.0.0
  */
 public class ErrorLogger {
-  // Les opp om singleton bruk https://refactoring.guru/design-patterns/singleton
   private static ErrorLogger errorLogger;
   private Logger logger;
 
@@ -62,7 +59,7 @@ public class ErrorLogger {
     logger.severe(message);
   }
 
-  private void initializeLogger() {
+  private void initializeLogger() throws RuntimeException {
     logger = Logger.getLogger(ErrorLogger.class.getName());
     logger.setUseParentHandlers(false);
     SimpleFormatter formatter = new SimpleFormatter();
@@ -72,13 +69,6 @@ public class ErrorLogger {
       handler = new FileHandler("error_log.txt");
     } catch (IOException e) {
       throw new RuntimeException("Unable to initialize logger", e);
-      // Explenation of RuntimeException
-      // https://www.geeksforgeeks.org/checked-vs-unchecked-exceptions-in-java/
-      // https://www.baeldung.com/java-runtime-exceptions
-      // https://www.baeldung.com/java-new-custom-exception
-      // https://www.baeldung.com/java-exceptions
-      // https://www.baeldung.com/java-exception-handling
-      // Disk problemer
     }
     handler.setFormatter(formatter);
     logger.addHandler(handler);

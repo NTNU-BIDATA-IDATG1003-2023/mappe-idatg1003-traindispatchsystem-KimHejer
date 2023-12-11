@@ -1,8 +1,7 @@
 package edu.ntnu.stud.traindepartures;
 
-
-import java.time.LocalTime;
 import edu.ntnu.stud.ErrorLogger;
+import java.time.LocalTime;
 
 /**
  * The {@code TrainDeparture} represents a train departure. All {@code TrainDeparture}s have a train
@@ -19,7 +18,7 @@ import edu.ntnu.stud.ErrorLogger;
  * {@code TrainDeparture}.
  *
  * @author Kim Hejer
- * @version 1.1.0
+ * @version 1.1.1
  * @since 1.0.0
  */
 
@@ -29,16 +28,12 @@ public class TrainDeparture {
   private int track;
   private String destination;
   private String line;
-  private String departureTime;
-  private LocalTime departureTime2;
-  private String initialDepartureTime;
-  private static final LocalTime DEFAULT_TIME2 = LocalTime.parse("00:00");
-  private LocalTime delay2 = DEFAULT_TIME2;
-  private static final String DEFAULT_TIME = "00:00";
-  private String delay = DEFAULT_TIME;
+  private LocalTime departureTime;
+  private static final LocalTime DEFAULT_TIME = LocalTime.MIN;
+  private LocalTime delay = DEFAULT_TIME;
   private static final String ERROR_VALUE = "INVALID";
   private static final int MAX_TRACK = 10;
-  private ErrorLogger logger;
+  private final ErrorLogger logger;
 
 
   /**
@@ -47,9 +42,12 @@ public class TrainDeparture {
    * @since 1.0.0
    */
   public TrainDeparture() {
-    this.initialDepartureTime = DEFAULT_TIME;
+    // Overriding the default constructor, giving it a default value.
+    this.setTrainNumber(0);
+    this.setDestination(ERROR_VALUE);
+    this.setLine(ERROR_VALUE);
+    this.setDepartureTime("00:00");
     this.logger = ErrorLogger.getLogger();
-
   }
 
   /**
@@ -70,7 +68,6 @@ public class TrainDeparture {
     this.setDestination(destination);
     this.setLine(line);
     this.setDepartureTime(departureTime);
-    this.initialDepartureTime = departureTime;
     this.logger = ErrorLogger.getLogger();
   }
 
@@ -217,80 +214,55 @@ public class TrainDeparture {
 
   /**
    * Sets the departure time of a {@code TrainDeparture} when a valid {@code String} is provided.
-   * The {@code String} is valid if and only if it is written in the format "HH:MM" and the time is
-   * a valid time before midnight.
+   * The {@code String} is valid if and only if it is written in the format "HH:MM".
    *
-   * <p>The departure time is set to "INVALID" when an invalid value is provided. The "INVALID"
+   * <p>The departure time is set to "00:00" when an invalid value is provided. The standard time
    * can be used to verify if the {@code TrainDeparture} object is valid to use.
    *
    * @param departureTime The time of departure. Has to be written in the format "HH:MM".
-   * @see #checkTimeString(String)
-   * @since 1.0.0
+   * @see #setTime(String)
+   * @since 1.1.0
    */
-  public void setDepartureTime2(String departureTime) {
-    try {
-      if (checkTimeString(departureTime)) {
-        this.departureTime = departureTime;
-      } else {
-        this.departureTime = ERROR_VALUE;
-      }
-    } catch (Exception e) {
-      this.departureTime = ERROR_VALUE;
-    }
-  }
-
   public void setDepartureTime(String departureTime) {
-    this.departureTime2 = setTime(departureTime);
+    this.departureTime = setTime(departureTime);
   }
 
   /**
-   * Changes the departure time and initial departure time of a {@code TrainDeparture} when a valid
+   * Changes the departure time of a {@code TrainDeparture} when a valid
    * {@code String} is provided. The {@code String} is valid if and only if it is written in the
-   * format "HH:MM" and the time is a valid time before midnight.
+   * format "HH:MM".
    *
-   * <p>The departure time is set to "INVALID" when an invalid value is provided. The "INVALID"
+   * <p>The departure time is set to "00:00" when an invalid value is provided. The standard time
    * can be used to verify if the {@code TrainDeparture} object is valid to use.
    *
    * @param departureTime The time of departure. Has to be written in the format "HH:MM".
-   * @see #checkTimeString(String)
-   * @since 1.0.0
+   * @see #setTime(String)
+   * @since 1.1.0
    */
-  public void changeDepartureTime2(String departureTime) {
-    try {
-      if (checkTimeString(departureTime)) {
-        this.departureTime = departureTime;
-        this.delay = DEFAULT_TIME;
-      } else {
-        this.departureTime = ERROR_VALUE;
-      }
-    } catch (Exception e) {
-      this.departureTime = ERROR_VALUE;
-    }
-    this.initialDepartureTime = departureTime;
-  }
-
   public void changeDepartureTime(String departureTime) {
-    this.departureTime2 = setTime(departureTime);
-    this.delay2 = DEFAULT_TIME2;
+    this.departureTime = setTime(departureTime);
+    this.delay = DEFAULT_TIME;
   }
 
   /**
-   * Provides the departure time of the {@code TrainDeparture} as {@code LocalTime}.
+   * Provides the departure time including the delay of the {@code TrainDeparture} as
+   * {@code LocalTime}.
    *
    * @return The departure time of the {@code TrainDeparture}.
    */
   public LocalTime getDepartureTime() {
-    return departureTime2.plusHours(delay2.getHour())
-        .plusMinutes(delay2.getMinute());
+    return departureTime.plusHours(delay.getHour())
+        .plusMinutes(delay.getMinute());
   }
 
   /**
-   * Provides the initial departure time of the {@code TrainDeparture}.
+   * Provides the initial departure time of the {@code TrainDeparture}. The initial time is
+   * the departure time, excluding the delay.
    *
    * @return The initial departure time of the {@code TrainDeparture}.
    */
   public LocalTime getInitialDepartureTime() {
-    return departureTime2;
+    return departureTime;
   }
 
 
@@ -299,40 +271,21 @@ public class TrainDeparture {
    * provided. The {@code String} is valid if and only if it is written in the format "HH:MM" and
    * the sum of the delay and current departure time is before midnight.
    *
-   * <p>If the delay is valid, it will increase the departure time by the delay.
-   *
-   * <p>The delay is set to "INVALID" when an invalid value is provided. The "INVALID" can be used
+   * <p>The delay is set to "00:00" when an invalid value is provided. The standard time can be used
    * to verify if the {@code TrainDeparture} object is valid to use.
    *
    * @param delay The delay to the departure time. Has to be written in the format "HH:MM".
-   * @see #checkTimeString(String)
-   * @since 1.0.0
+   * @see #setTime(String)
+   * @since 1.1.0
    */
-  public void setDelay2(String delay) {
-    if (checkTimeString(delay)) {
-      LocalTime newTime = LocalTime.parse(this.departureTime)
-          .plusHours(LocalTime.parse(delay).getHour())
-          .plusMinutes(LocalTime.parse(delay).getMinute());
-      if (newTime.isBefore(LocalTime.parse(this.departureTime))) {
-        this.delay = ERROR_VALUE;
-      } else {
-        this.delay = delay;
-        setDepartureTime(localTimeToString(newTime));
-      }
-    } else {
-      this.delay = ERROR_VALUE;
-    }
-
-  }
-
   public void setDelay(String delay) {
     LocalTime newDelay = setTime(delay);
-    if (departureTime2.plusHours(newDelay.getHour())
+    if (departureTime.plusHours(newDelay.getHour())
         .plusMinutes(newDelay.getMinute())
-        .isBefore(DEFAULT_TIME2)) {
-      this.delay2 = DEFAULT_TIME2;
+        .isBefore(DEFAULT_TIME)) {
+      this.delay = DEFAULT_TIME;
     } else {
-      this.delay2 = newDelay;
+      this.delay = newDelay;
     }
   }
 
@@ -341,53 +294,21 @@ public class TrainDeparture {
    *
    * @return The delay of the {@code TrainDeparture}.
    */
-  public String getDelay2() {
-    return delay;
-  }
-
   public LocalTime getDelay() {
-    return delay2;
+    return delay;
   }
 
   /**
    * The {@code checkTimeString} method checks if a given {@code String} is a valid timeString. The
-   * timeString is valid if and only if it is written in the format "HH:MM" and the time is a valid
-   * time before midnight.
+   * timeString is valid if and only if it is written in the format "HH:MM".
    *
-   * <p>Example: "12:00" is a valid timeString, but "12:60" and "1040" are not.
+   * <p>Example: "12:00" is a valid timeString, but "1040" are not.
    *
    * @param timeString The timeString to be checked.
-   * @return {@code true} if the timeString is valid, {@code false} otherwise.
-   * @since 1.0.0
-   */
-  private boolean checkTimeString(String timeString) {
-    String[] timeStringList = timeString.split("\\:", 0);
-    boolean output = true;
-    if (timeStringList.length != 2) {
-      output = false;
-    } else {
-      String hour = timeStringList[0];
-      String minute = timeStringList[1];
-      if (hour.length() != 2 || minute.length() != 2) {
-        output = false;
-      }
-      try {
-        int hourInt = Integer.parseInt(hour);
-        int minuteInt = Integer.parseInt(minute);
-        if (hourInt > 23 || hourInt < 0 || minuteInt < 0 || minuteInt > 59) {
-          output = false;
-        }
-      } catch (NumberFormatException e) {
-        logger.logError(e.getMessage());
-        for (StackTraceElement element : e.getStackTrace()) {
-          logger.logError(String.valueOf(element));
-        }
-        output = false;
-      }
-    }
-    return output;
-  }
-
+   * @return LocalTime object of the given {@code String} if the timeString is valid, standard time
+   "00:00" otherwise.
+   * @since 1.1.0
+    */
   private LocalTime setTime(String timeString) {
     LocalTime output;
     try {
@@ -397,7 +318,7 @@ public class TrainDeparture {
       for (StackTraceElement element : e.getStackTrace()) {
         logger.logError(String.valueOf(element));
       }
-      output = DEFAULT_TIME2;
+      output = DEFAULT_TIME;
     }
     return output;
   }
@@ -413,37 +334,4 @@ public class TrainDeparture {
   private boolean validateString(String string) {
     return string != null && !string.isEmpty();
   }
-
-  /**
-   * The {@code localTimeToString} method converts a {@code LocalTime} object to a {@code String}.
-   *
-   * @param time The LocalTime object to be converted.
-   * @return The converted LocalTime object as a String in the format "HH:MM".
-   * @see #convertTimeValueToString(int)
-   * @since 1.0.0
-   */
-  public String localTimeToString(LocalTime time) {
-    int hour = time.getHour();
-    int minute = time.getMinute();
-    return convertTimeValueToString(hour) + ":" + convertTimeValueToString(minute);
-  }
-
-  /**
-   * The {@code convertTimeValueToString} method converts a {@code int} value to a double-digit
-   * {@code String}.
-   *
-   * @param value The int value to be converted.
-   * @return The converted int value as a double-digit String.
-   * @since 1.0.0
-   */
-  private String convertTimeValueToString(int value) {
-    String valueString;
-    if (value < 10) {
-      valueString = "0" + value;
-    } else {
-      valueString = String.valueOf(value);
-    }
-    return valueString;
-  }
-
 }

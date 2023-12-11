@@ -12,7 +12,7 @@ import java.time.LocalTime;
  * <p>The {@code Validator} class is used by the {@code InputHandler} class.
  *
  * @author Kim Hejer
- * @version 1.1.0
+ * @version 1.1.1
  * @since 1.0.0
  * @see InputHandler
  */
@@ -39,7 +39,7 @@ public class Validator {
    * @since 1.0.0
    */
   public boolean checkTimeString(String timeString) {
-    String[] timeStringList = timeString.split("\\:", 0);
+    String[] timeStringList = timeString.split(":", 0);
     boolean output = true;
     if (timeStringList.length != 2) {
       output = false;
@@ -79,37 +79,18 @@ public class Validator {
   }
 
   /**
-   * The {@code validateTime} method checks if a given {@code String} is a valid time.
-   * The time is valid if and only if it is written in the format "HH:MM" and the time
-   * is a valid time before midnight.
-   *
-   * <p>Example: "12:00" is a valid time, but "12:60" is not.
+   * The {@code validateDelay} method checks if a given {@code String} is a valid delay.
+   * The delay is valid if and only if it is written in the format "HH:MM" and the sum of the time
+   * and the delay is after the current time.
    *
    * @param departureTime The departure time of the {@code TrainDeparture} object to be checked.
    * @param delay         The delay of the {@code TrainDeparture} object to be checked.
    * @param currentTime   The current time.
    * @return {@code true} if the delay is valid, {@code false} otherwise.
-   * @since 1.0.0
+   * @since 1.1.0
    */
-  public boolean validateDelay2(String departureTime, String delay, LocalTime currentTime) {
-    boolean output = false;
-    int delayHour = LocalTime.parse(delay).getHour();
-    int delayMinute = LocalTime.parse(delay).getMinute();
-    if (!LocalTime
-        .parse(departureTime)
-        .plusHours(delayHour)
-        .plusMinutes(delayMinute)
-        .isBefore(currentTime)) {
-      output = true;
-    }
-    return output;
-  }
-
   public boolean validateDelay(LocalTime departureTime, LocalTime delay, LocalTime currentTime) {
-    boolean output = false;
-    if (departureTime.plusHours(delay.getHour()).plusMinutes(delay.getMinute()).isAfter(currentTime)) {
-      output = true;
-    }
-    return output;
+    return departureTime.plusHours(delay.getHour()).plusMinutes(delay.getMinute())
+        .isAfter(currentTime);
   }
 }

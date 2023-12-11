@@ -2,7 +2,6 @@ package edu.ntnu.stud.traindeparturetools;
 
 import edu.ntnu.stud.traindeparturegui.TrainDepartureGUI;
 import edu.ntnu.stud.traindepartures.TrainDeparture;
-import java.rmi.ServerError;
 import java.time.LocalTime;
 import java.util.stream.Collectors;
 
@@ -13,17 +12,19 @@ import java.util.stream.Collectors;
  * print messages to the console.
  *
  * @author Kim Hejer
- * @version 1.1.0
+ * @version 1.1.1
+ * @since 1.0.0
  * @see TrainDepartureGUI
  * @see InputHandler
- * @since 1.0.0
  */
 public class Printer {
 
-  private StringBuilder stringBuilder;
+  private final StringBuilder stringBuilder;
+
 
   public Printer() {
     stringBuilder = new StringBuilder();
+
   }
 
   /**
@@ -61,7 +62,7 @@ public class Printer {
 
   private String strikeThrough(String str) {
     return str.chars()
-        .mapToObj(c -> "" + (char) c + "\u0336")
+        .mapToObj(c -> (char) c + "̶") // "̶" = "\u0336"
         .collect(Collectors.joining());
   }
 
@@ -69,24 +70,38 @@ public class Printer {
    * The {@code printMenuChoices} method prints the main menu-choices for the user.
    */
   public void printMenuChoices() {
-    System.out.println("What would you like to do? Enter a number between 1 and 9.");
-    System.out.println("1. Add a new train departure");
-    System.out.println("2. Change a train departure");
-    System.out.println("3. Add delay to a train departure");
-    System.out.println("4. Assign track to departure");
-    System.out.println("5. Search for a train departure");
-    System.out.println("6. Print all train departures");
-    System.out.println("7. Change time");
-    System.out.println("8. Exit");
+    resetStringBuilder();
+    stringBuilder.append("What would you like to do? Enter a number between 1 and 9.")
+        .append("\n")
+        .append("1. Add a new train departure")
+        .append("\n")
+        .append("2. Change a train departure")
+        .append("\n")
+        .append("3. Add delay to a train departure")
+        .append("\n")
+        .append("4. Assign track to departure")
+        .append("\n")
+        .append("5. Search for a train departure")
+        .append("\n")
+        .append("6. Print all train departures")
+        .append("\n")
+        .append("7. Change time")
+        .append("\n")
+        .append("8. Exit");
+    System.out.println(stringBuilder);
   }
 
   /**
    * The {@code printSearchMenuChoices} method prints the search menu-choices for the user.
    */
   public void printSearchMenuChoices() {
-    System.out.println("What would you like to do? Enter a number between 1 and 2.");
-    System.out.println("1. Search for departure by train number.");
-    System.out.println("2. Search for departures with the same destination.");
+    resetStringBuilder();
+    stringBuilder.append("What would you like to do? Enter a number between 1 and 2.")
+        .append("\n")
+        .append("1. Search for departure by train number.")
+        .append("\n")
+        .append("2. Search for departures with the same destination.");
+    System.out.println(stringBuilder);
   }
 
   /**
@@ -94,10 +109,14 @@ public class Printer {
    */
   public void printChangeMenuChoices() {
     resetStringBuilder();
-    stringBuilder.append("What would yo like to edit? Enter a number between 1 and 4." + "\n")
-        .append("1. Change Train Number" + "\n")
-        .append("2. Change Line" + "\n")
-        .append("3. Change Destination" + "\n")
+    stringBuilder.append("What would yo like to edit? Enter a number between 1 and 4.")
+        .append("\n")
+        .append("1. Change Train Number")
+        .append("\n")
+        .append("2. Change Line")
+        .append("\n")
+        .append("3. Change Destination")
+        .append("\n")
         .append("4. Change Departure Time");
     System.out.println(stringBuilder);
   }
@@ -112,7 +131,7 @@ public class Printer {
    * The {@code printChangeTimeMenuChoices} method prints the welcome message to the user.
    */
   public void printWelcomeMessage() {
-    System.out.println("Welcome to the train dispatch application!");
+    System.out.println("Welcome to the train dispatch application! Version 1.1.1");
   }
 
   /**

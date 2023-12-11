@@ -1,8 +1,6 @@
-package edu.ntnu.stud.trainDeparture;
+package edu.ntnu.stud.traindepartures;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import edu.ntnu.stud.traindepartures.TrainDeparture;
 import java.time.LocalTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,0 @@
-Fremgangsplan for prosjektet:
-* Dokumentere klassene og feltene underveis
-* Lage klasser for tall og klokke, slik at vi kan bruke tid til prosjektet
-* Jevnlig bygg videre på rapporten
-* Sjekk om delay + departureTime er innenfor dagens 24t.
-
-* Gå gjennom koden med Checkstyle og SonarLint
