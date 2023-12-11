@@ -20,17 +20,22 @@ There is also a log file containing error messages that would crash the program,
 
 https://github.com/NTNU-BIDATA-IDATG1003-2023/mappe-idatg1003-traindispatchsystem-KimHejer
 
+## Requirements
+
+* SDK - coretto-17 "java 17.0.9"
+* 
+
 ## How to run the project
 
 To run the file, open the class "TrainDispatchApp" and run the "main" method or create an instance of "TrainDepartureGUI" and call its "init" and "start" methods. The program will then display a welcome message and further give instructions to the user. The user executes commands by typing numbers with corresponding methods in the console. In the occurance of invalid inputs, the program will display an error message with new instructions. 
 
 ## How to run the tests
-
+<p></p>
 With Maven:
-In the Maven menu, open the folder "Lifecycle" and click on "Run Maven Build" under "test".
-
+<p>In the Maven menu, open the folder "Lifecycle" and click on "Run Maven Build" under "test".
+</p>
 Without Maven:
-First locate the classes "TrainDepartureTest" and "DepartureRegister". The tests can be run one method at a time by clicking the run icon next to the method, or all the methods at once by running the test class itself. 
+<p>First locate the classes "TrainDepartureTest" and "DepartureRegister". The tests can be run one method at a time by clicking the run icon next to the method, or all the methods at once by running the test class itself. 
 
 ## References
 
