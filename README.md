@@ -12,9 +12,9 @@ The train dispatch app is a simplified system for dispatching train departures. 
 ## Project structure
 
 The project is structured by folders. The main application and tests can be found under the folder "src".
-To locate the main application "TrainDispatchApp", follow the folders "main" -> "java" -> "edu.stud.ntnu".
-The test classes are found following the folders "test" -> "java" -> ed.stud.ntnu.traindepartures". 
-There is also a log file containing error messages that would crash the program, located in the file "error_log.txt"
+<p>To locate the main application "TrainDispatchApp", follow the folders "main" -> "java" -> "edu.stud.ntnu".
+<p>The test classes are found following the folders "test" -> "java" -> ed.stud.ntnu.traindepartures". 
+<p>There is also a log file containing error messages that would crash the program, located in the file "error_log.txt" [1]. 
 
 ## Link to repository
 
@@ -38,4 +38,4 @@ Without Maven:
 
 ## References
 
-https://stackoverflow.com/questions/15758685/how-to-write-logs-in-text-file-when-using-java-util-logging-logger
+[1] https://stackoverflow.com/questions/15758685/how-to-write-logs-in-text-file-when-using-java-util-logging-logger
